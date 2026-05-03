@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: '곁에 — 자녀를 대신해, 부모님 곁에.',
   description:
     '자녀를 대신해, 부모님 곁에. 매주 전화 너머의 "괜찮다"와 실제의 오늘 사이를 잇는 동행 구독.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
 };
 
 export default function RootLayout({

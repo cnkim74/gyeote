@@ -90,6 +90,36 @@ export function Nav() {
             </Link>
           )}
 
+          {role === 'paying' && (
+            <Link
+              href="/dashboard"
+              className="hidden md:inline-flex items-center gap-1.5 text-[13px] text-mute hover:text-ink transition-colors"
+            >
+              <LayoutDashboard size={14} strokeWidth={1.4} />
+              내 대시보드
+            </Link>
+          )}
+
+          {role === 'general' && (
+            <Link
+              href="/mypage"
+              className="hidden md:inline-flex items-center gap-1.5 text-[13px] text-mute hover:text-ink transition-colors"
+            >
+              <LayoutDashboard size={14} strokeWidth={1.4} />
+              내 페이지
+            </Link>
+          )}
+
+          {role === 'manager' && (
+            <Link
+              href="/manager"
+              className="hidden md:inline-flex items-center gap-1.5 text-[13px] text-mute hover:text-ink transition-colors"
+            >
+              <LayoutDashboard size={14} strokeWidth={1.4} />
+              매니저 페이지
+            </Link>
+          )}
+
           {role && role !== 'admin' && (
             <button
               onClick={handleLogout}

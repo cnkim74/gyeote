@@ -33,8 +33,12 @@ export default function LoginPage() {
       .eq('id', user.id)
       .single();
 
-    // 전체 페이지 리로드로 쿠키 동기화 보장
-    window.location.href = profile?.role === 'admin' ? '/admin' : '/';
+    const dest =
+      profile?.role === 'admin' ? '/admin' :
+      profile?.role === 'paying' ? '/dashboard' :
+      profile?.role === 'manager' ? '/manager' :
+      profile?.role === 'general' ? '/mypage' : '/';
+    window.location.href = dest;
   }
 
   return (
