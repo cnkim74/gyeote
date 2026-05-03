@@ -170,10 +170,13 @@ export default function NewReportPage() {
     for (const file of photoFiles) {
       const path = `${managerId}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
       const { error: upErr } = await supabase.storage.from('visit-photos').upload(path, file);
-      if (!upErr) {
-        const { data: { publicUrl } } = supabase.storage.from('visit-photos').getPublicUrl(path);
-        photoUrls.push(publicUrl);
+      if (upErr) {
+        setError(`사진 업로드 실패: ${upErr.message}`);
+        setLoading(false);
+        return;
       }
+      const { data: { publicUrl } } = supabase.storage.from('visit-photos').getPublicUrl(path);
+      photoUrls.push(publicUrl);
     }
 
     // Upload signature
