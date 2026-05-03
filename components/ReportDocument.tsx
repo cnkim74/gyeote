@@ -87,6 +87,10 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
           }
           body { background: white !important; }
           @page { size: A4; margin: 18mm 18mm 18mm 18mm; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          .photo-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; }
+          .photo-cell { width: 100% !important; height: 110px !important; overflow: hidden !important; break-inside: avoid !important; }
+          .photo-cell img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
         }
       `}</style>
 
@@ -380,18 +384,20 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
                 <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
                   사진 기록
                 </p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+                <div className="photo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
                   {report.photos.slice(0, 8).map((url, i) => (
                     <div
                       key={i}
+                      className="photo-cell"
                       style={{
-                        aspectRatio: '1',
+                        width: '100%',
+                        height: 110,
                         overflow: 'hidden',
                         border: '0.5px solid rgba(42,40,35,0.18)',
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     </div>
                   ))}
                 </div>
