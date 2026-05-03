@@ -22,7 +22,7 @@ export default function LoginPage() {
     const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError || !user) {
-      setError('이메일 또는 비밀번호가 맞지 않습니다.');
+      setError(authError?.message ?? '로그인 실패');
       setLoading(false);
       return;
     }
