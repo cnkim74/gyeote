@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Camera, X, Send, User, Phone, Clock, MapPin, Sparkles, Loader2 } from 'lucide-react';
 import { SignaturePad } from '@/components/SignaturePad';
@@ -550,8 +549,9 @@ export default function NewReportPage() {
           {previews.length > 0 && (
             <div className="grid grid-cols-4 gap-2 mb-3">
               {previews.map((url, i) => (
-                <div key={i} className="relative aspect-square overflow-hidden bg-surface" style={border}>
-                  <Image src={url} alt="" fill className="object-cover" />
+                <div key={i} className="relative overflow-hidden bg-surface" style={{ ...border, aspectRatio: '1' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   <button
                     type="button"
                     onClick={() => removePhoto(i)}
