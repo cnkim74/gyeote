@@ -19,9 +19,9 @@ export default function LoginPage() {
     setError('');
 
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+    const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (authError) {
+    if (authError || !user) {
       setError('이메일 또는 비밀번호가 맞지 않습니다.');
       setLoading(false);
       return;
@@ -30,10 +30,11 @@ export default function LoginPage() {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
+      .eq('id', user.id)
       .single();
 
-    router.push(profile?.role === 'admin' ? '/admin' : '/');
-    router.refresh();
+    // 전체 페이지 리로드로 쿠키 동기화 보장
+    window.location.href = profile?.role === 'admin' ? '/admin' : '/';
   }
 
   return (
