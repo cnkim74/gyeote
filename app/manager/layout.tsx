@@ -35,6 +35,7 @@ export default async function ManagerLayout({ children }: { children: React.Reac
             <Link href="/manager" className="text-[13px] text-ink/70 hover:text-ink transition-colors">대시보드</Link>
             <Link href="/manager/members" className="text-[13px] text-ink/70 hover:text-ink transition-colors">어르신 등록</Link>
             <Link href="/manager/report/new" className="text-[13px] text-ink/70 hover:text-ink transition-colors">보고서 작성</Link>
+            <Link href="/manager/settings" className="text-[13px] text-ink/70 hover:text-ink transition-colors">프로필 설정</Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">

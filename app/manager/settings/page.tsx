@@ -17,7 +17,7 @@ export default function ManagerSettingsPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return;
+      if (!user) { setLoading(false); return; }
       setUserId(user.id);
       const { data } = await supabase
         .from('profiles')
@@ -30,7 +30,7 @@ export default function ManagerSettingsPage() {
         avatar_url: data.avatar_url ?? '',
       });
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, []);
 
   async function handleSave(e: React.FormEvent) {
