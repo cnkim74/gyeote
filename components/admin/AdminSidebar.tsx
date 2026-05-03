@@ -65,7 +65,7 @@ export function AdminSidebar({ profile }: { profile: Profile }) {
 
   return (
     <aside
-      className="w-[260px] h-full bg-paper flex flex-col shrink-0"
+      className="print:hidden w-[260px] h-full bg-paper flex flex-col shrink-0"
       style={{ borderRight: '0.5px solid rgba(42,40,35,0.18)' }}
     >
       {/* Logo */}
