@@ -304,6 +304,30 @@ export default async function DashboardPage() {
               </div>
             )}
 
+            {/* CARENOTE 링크 */}
+            <a
+              href="https://health.cnbiz.info"
+              target="_blank"
+              rel="noreferrer"
+              className="bg-paper p-5 flex items-start gap-3 hover:bg-primary/5 transition-colors group"
+              style={border}
+            >
+              <div className="w-8 h-8 rounded-full bg-[#2F6BFF]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span style={{ fontSize: 16 }}>💊</span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13.5px] font-medium text-ink group-hover:text-primary transition-colors">
+                  CARENOTE
+                </p>
+                <p className="text-[11.5px] text-mute mt-0.5 leading-[1.6]">
+                  복약·혈당·체중 기록 앱
+                </p>
+              </div>
+              <svg className="shrink-0 mt-1 text-mute group-hover:text-primary transition-colors" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 17L17 7M17 7H7M17 7v10"/>
+              </svg>
+            </a>
+
             {/* Map */}
             {sub.beneficiary && (
               <KakaoMap

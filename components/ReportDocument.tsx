@@ -1,8 +1,9 @@
 'use client';
 
-import { Printer, ArrowLeft, CheckSquare, Square } from 'lucide-react';
+import { Printer, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { ApprovalStamp } from './ApprovalStamp';
+import { MoodCharacterRow } from './MoodCharacter';
 
 interface ReportData {
   id: string;
@@ -10,6 +11,7 @@ interface ReportData {
   visit_time: string | null;
   mood: 'good' | 'fair' | 'concern';
   condition_score: number | null;
+  stress_score: number | null;
   summary: string;
   photos: string[] | null;
   signature_url: string | null;
@@ -33,11 +35,8 @@ interface ReportDocumentProps {
   backHref?: string;
 }
 
-const MOOD_OPTIONS = [
-  { value: 'good',    label: '좋음' },
-  { value: 'fair',    label: '보통' },
-  { value: 'concern', label: '관심 필요' },
-] as const;
+const STRESS_LABELS = ['', '매우 안정', '안정', '보통', '약간 높음', '매우 높음'];
+const STRESS_COLORS = ['', '#2D6A4F', '#4F9D6A', '#B58900', '#C2540A', '#B91C1C'];
 
 function korDateTime(date: string, time: string | null) {
   const dt = new Date(date + 'T00:00:00');
@@ -211,29 +210,10 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
 
           {/* ── Mood status ── */}
           <div style={{ margin: '20px 0' }}>
-            <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
+            <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 14, textTransform: 'uppercase' }}>
               안부 상태
             </p>
-            <div style={{ display: 'flex', gap: 32 }}>
-              {MOOD_OPTIONS.map(opt => {
-                const checked = report.mood === opt.value;
-                return (
-                  <div key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {checked
-                      ? <CheckSquare size={16} strokeWidth={1.5} color="#2C5F5D" />
-                      : <Square size={16} strokeWidth={1.5} color="#C7C0B4" />
-                    }
-                    <span style={{
-                      fontSize: 14,
-                      fontWeight: checked ? 700 : 400,
-                      color: checked ? '#2C5F5D' : '#9B9488',
-                    }}>
-                      {opt.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            <MoodCharacterRow selected={report.mood} />
           </div>
 
           {/* ── Condition score ── */}
@@ -264,6 +244,50 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#B5820A' }}>
                     {report.condition_score} / 10
                   </span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ── Stress score ── */}
+          {report.stress_score != null && report.stress_score > 0 && (
+            <>
+              <div style={line} />
+              <div style={{ margin: '20px 0' }}>
+                <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
+                  스트레스 지수
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {Array.from({ length: 5 }, (_, i) => {
+                      const level = i + 1;
+                      const filled = level <= report.stress_score!;
+                      const color = STRESS_COLORS[level];
+                      return (
+                        <div
+                          key={i}
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            background: filled ? color : 'transparent',
+                            border: `2px solid ${filled ? color : 'rgba(42,40,35,0.18)'}`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {filled && (
+                            <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>{level}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: STRESS_COLORS[report.stress_score] }}>
+                    {STRESS_LABELS[report.stress_score]}
+                  </span>
+                  <span style={{ fontSize: 12, color: '#9B9488' }}>({report.stress_score} / 5)</span>
                 </div>
               </div>
             </>

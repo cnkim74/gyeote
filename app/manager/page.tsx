@@ -164,6 +164,24 @@ export default async function ManagerPage() {
 
         {/* Right: Recent reports + Calendar */}
         <div className="md:w-64 shrink-0 w-full flex flex-col gap-5">
+          {/* CARENOTE 링크 */}
+          <a
+            href="https://health.cnbiz.info"
+            target="_blank"
+            rel="noreferrer"
+            className="bg-paper p-4 flex items-center gap-3 hover:bg-primary/5 transition-colors group"
+            style={border}
+          >
+            <span style={{ fontSize: 18 }}>💊</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-medium text-ink group-hover:text-primary transition-colors">CARENOTE</p>
+              <p className="text-[11px] text-mute">복약·혈당 기록 앱</p>
+            </div>
+            <svg className="shrink-0 text-mute" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </a>
+
           <div>
             <p className="text-[11px] tracking-[0.15em] uppercase text-mute mb-3">최근 방문 기록</p>
             {recentReports.length === 0 ? (

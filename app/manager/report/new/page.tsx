@@ -33,6 +33,7 @@ export default function NewReportPage() {
   const [managerId, setManagerId] = useState('');
   const [managerName, setManagerName] = useState('');
   const [managerPhone, setManagerPhone] = useState('');
+  const [managerAvatar, setManagerAvatar] = useState<string | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
@@ -42,6 +43,7 @@ export default function NewReportPage() {
     visit_time: `${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`,
     mood: 'good' as 'good' | 'fair' | 'concern',
     condition_score: 0,
+    stress_score: 0,
     summary: '',
   });
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
@@ -58,11 +60,12 @@ export default function NewReportPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('name, phone')
+        .select('name, phone, avatar_url')
         .eq('id', user.id)
         .single();
       setManagerName(profile?.name ?? '');
       setManagerPhone(profile?.phone ?? '');
+      setManagerAvatar((profile as any)?.avatar_url ?? null);
 
       const { data } = await supabase
         .from('subscriptions')
@@ -151,6 +154,7 @@ export default function NewReportPage() {
       photos: photoUrls,
       signature_url: signatureUrl,
       condition_score: form.condition_score > 0 ? form.condition_score : null,
+      stress_score: form.stress_score > 0 ? form.stress_score : null,
       status: 'pending',
     });
 
@@ -176,14 +180,38 @@ export default function NewReportPage() {
         {/* 매니저 정보 (읽기 전용) */}
         <div className="bg-paper p-5" style={border}>
           <p className="text-[10.5px] tracking-[0.15em] uppercase text-mute mb-3">방문 매니저</p>
-          <div className="flex gap-6">
-            <div className="flex items-center gap-2">
-              <User size={13} className="text-mute" strokeWidth={1.4} />
-              <span className="text-[14px] text-ink">{managerName || '—'}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone size={13} className="text-mute" strokeWidth={1.4} />
-              <span className="text-[14px] text-ink">{managerPhone || '—'}</span>
+          <div className="flex items-center gap-4">
+            {/* 프로필 사진 — 라운드 사각형 */}
+            {managerAvatar ? (
+              <div
+                className="overflow-hidden shrink-0"
+                style={{ width: 52, height: 52, borderRadius: 10, border: '0.5px solid rgba(42,40,35,0.15)' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={managerAvatar} alt={managerName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            ) : (
+              <div
+                className="flex items-center justify-center shrink-0 font-bold text-white text-[18px]"
+                style={{
+                  width: 52, height: 52, borderRadius: 10,
+                  background: '#2C5F5D',
+                }}
+              >
+                {managerName ? managerName.slice(0, 1) : <User size={20} />}
+              </div>
+            )}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <User size={12} className="text-mute" strokeWidth={1.4} />
+                <span className="text-[14px] text-ink font-medium">{managerName || '—'}</span>
+              </div>
+              {managerPhone && (
+                <div className="flex items-center gap-2">
+                  <Phone size={12} className="text-mute" strokeWidth={1.4} />
+                  <span className="text-[13px] text-mute">{managerPhone}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -319,6 +347,48 @@ export default function NewReportPage() {
               value={form.condition_score}
               onChange={v => setForm(f => ({ ...f, condition_score: v }))}
             />
+          </div>
+        </div>
+
+        {/* 스트레스 지수 */}
+        <div>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">스트레스 지수</label>
+          <div className="bg-paper p-4 flex flex-col gap-3" style={border}>
+            <div className="flex gap-2">
+              {[
+                { v: 1, label: '매우 안정', color: '#2D6A4F', bg: '#E8F4EC' },
+                { v: 2, label: '안정',    color: '#4F9D6A', bg: '#F0FAF3' },
+                { v: 3, label: '보통',    color: '#B58900', bg: '#FFF8E1' },
+                { v: 4, label: '약간 높음', color: '#C2540A', bg: '#FEF3EB' },
+                { v: 5, label: '매우 높음', color: '#B91C1C', bg: '#FDE8E8' },
+              ].map(opt => {
+                const active = form.stress_score === opt.v;
+                return (
+                  <button
+                    key={opt.v}
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, stress_score: active ? 0 : opt.v }))}
+                    className="flex-1 flex flex-col items-center gap-1.5 py-3 transition-all"
+                    style={{
+                      border: `1.5px solid ${active ? opt.color : 'rgba(42,40,35,0.15)'}`,
+                      background: active ? opt.bg : 'transparent',
+                    }}
+                  >
+                    <span style={{ fontSize: 16, fontWeight: 700, color: active ? opt.color : 'rgba(42,40,35,0.35)' }}>
+                      {opt.v}
+                    </span>
+                    <span style={{ fontSize: 10, color: active ? opt.color : '#9B9488', letterSpacing: '0.05em', textAlign: 'center', lineHeight: 1.3 }}>
+                      {opt.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {form.stress_score > 0 && (
+              <p className="text-[12px] text-mute">
+                선택: <span className="font-medium text-ink">{['', '매우 안정', '안정', '보통', '약간 높음', '매우 높음'][form.stress_score]}</span> ({form.stress_score}/5)
+              </p>
+            )}
           </div>
         </div>
 
