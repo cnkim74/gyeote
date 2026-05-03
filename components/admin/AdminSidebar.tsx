@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, ImageIcon, LogOut, ClipboardCheck, CalendarDays, UserPlus, Settings, FileText, Trophy } from 'lucide-react';
+import { LayoutDashboard, Users, ImageIcon, LogOut, ClipboardCheck, CalendarDays, UserPlus, Settings, FileText, Trophy, ArrowLeft } from 'lucide-react';
 import { Wordmark } from '@/components/Wordmark';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/types';
@@ -123,6 +123,13 @@ export function AdminSidebar({ profile }: { profile: Profile }) {
             <p className="text-[11px] text-mute truncate">{profile.email}</p>
           </div>
         </div>
+        <Link
+          href="/"
+          className="flex items-center gap-2 w-full px-2.5 py-1.5 text-[13px] text-mute hover:text-ink transition-colors rounded hover:bg-ink/[0.04] mb-0.5"
+        >
+          <ArrowLeft size={14} strokeWidth={1.4} />
+          메인 사이트로
+        </Link>
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 w-full px-2.5 py-1.5 text-[13px] text-mute hover:text-ink transition-colors rounded hover:bg-ink/[0.04]"
