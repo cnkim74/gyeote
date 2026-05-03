@@ -43,7 +43,7 @@ export default async function DashboardPage() {
 
   const { data: subRaw } = await admin
     .from('subscriptions')
-    .select('*, beneficiary:beneficiary_id(id, name, phone), manager:manager_id(id, name, phone)')
+    .select('*, beneficiary:beneficiary_id(id, name, phone, address, address_detail), manager:manager_id(id, name, phone)')
     .eq('payer_id', user!.id)
     .order('created_at', { ascending: false })
     .limit(1)

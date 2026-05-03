@@ -30,7 +30,7 @@ export default async function ManagerPage() {
 
   const { data: subs } = await admin
     .from('subscriptions')
-    .select('*, beneficiary:beneficiary_id(id, name, phone)')
+    .select('*, beneficiary:beneficiary_id(id, name, phone, address, address_detail)')
     .eq('manager_id', user!.id)
     .eq('status', 'active');
 
