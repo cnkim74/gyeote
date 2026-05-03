@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
-import { ArrowLeft, Camera, X, Send, User, Phone, Clock, MapPin } from 'lucide-react';
+import { ArrowLeft, Camera, X, Send, User, Phone, Clock, MapPin, Sparkles, Loader2 } from 'lucide-react';
 import { SignaturePad } from '@/components/SignaturePad';
 import { StarRating } from '@/components/StarRating';
 
@@ -51,6 +51,8 @@ export default function NewReportPage() {
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [aiKeywords, setAiKeywords] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -106,6 +108,30 @@ export default function NewReportPage() {
     URL.revokeObjectURL(previews[idx]);
     setPhotoFiles(prev => prev.filter((_, i) => i !== idx));
     setPreviews(prev => prev.filter((_, i) => i !== idx));
+  }
+
+  async function handleAiDraft() {
+    if (!aiKeywords.trim()) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch('/api/ai/draft-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          keywords: aiKeywords,
+          mood: form.mood,
+          conditionScore: form.condition_score || null,
+          stressScore: form.stress_score || null,
+          beneficiaryName: selectedClient?.name ?? null,
+        }),
+      });
+      const data = await res.json();
+      if (data.draft) setForm(f => ({ ...f, summary: data.draft }));
+    } catch {
+      // silently fail
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -363,7 +389,41 @@ export default function NewReportPage() {
 
         {/* 방문 일지 */}
         <div>
-          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2">방문 일지 *</label>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-[11px] tracking-[0.18em] uppercase text-mute">방문 일지 *</label>
+          </div>
+
+          {/* AI 초안 도우미 */}
+          <div className="bg-paper p-4 mb-2" style={{ ...border, borderBottom: 'none' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles size={12} strokeWidth={1.4} className="text-primary" />
+              <p className="text-[11px] tracking-[0.12em] uppercase text-primary font-medium">AI 초안 작성</p>
+              <span className="text-[10px] text-mute ml-1">키워드나 메모를 입력하면 AI가 일지를 작성해 드려요</span>
+            </div>
+            <div className="flex gap-2">
+              <textarea
+                value={aiKeywords}
+                onChange={e => setAiKeywords(e.target.value)}
+                rows={2}
+                placeholder="예) 식사 잘 하심, 무릎 통증 호소, 자녀 방문 얘기, 산책 30분"
+                className="flex-1 bg-surface px-3 py-2 text-[13px] text-ink focus:outline-none resize-none leading-[1.7]"
+                style={{ border: '0.5px solid rgba(42,40,35,0.15)' }}
+                onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAiDraft(); }}
+              />
+              <button
+                type="button"
+                onClick={handleAiDraft}
+                disabled={aiLoading || !aiKeywords.trim()}
+                className="shrink-0 flex items-center gap-1.5 bg-primary text-surface px-4 py-2 text-[12.5px] hover:bg-primary-deep transition-colors disabled:opacity-40 self-end"
+              >
+                {aiLoading
+                  ? <><Loader2 size={13} strokeWidth={1.4} className="animate-spin" />생성 중</>
+                  : <><Sparkles size={13} strokeWidth={1.4} />초안 작성</>
+                }
+              </button>
+            </div>
+          </div>
+
           <textarea
             value={form.summary}
             onChange={e => setForm(f => ({ ...f, summary: e.target.value }))}
