@@ -23,8 +23,26 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // 세션 토큰 갱신만 처리 (라우트 보호는 각 레이아웃에서 처리)
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // 로그인된 사용자가 / 에 오면 역할별 대시보드로 리디렉션
+  if (user && request.nextUrl.pathname === '/') {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const dest =
+      profile?.role === 'admin'   ? '/admin' :
+      profile?.role === 'paying'  ? '/dashboard' :
+      profile?.role === 'manager' ? '/manager' :
+      profile?.role === 'general' ? '/mypage' : null;
+
+    if (dest) {
+      return NextResponse.redirect(new URL(dest, request.url));
+    }
+  }
 
   return supabaseResponse;
 }
