@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CheckCircle, XCircle, Clock, User, Phone, MapPin, Calendar, FileText } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, User, Phone, Calendar, FileText } from 'lucide-react';
 
 type Status = 'pending' | 'approved' | 'rejected';
 
@@ -181,12 +181,6 @@ export default function ReportsPage() {
                         <span className="text-[13px] text-ink">{r.beneficiary?.name}</span>
                         {r.beneficiary?.phone && (
                           <p className="text-[11px] text-mute mt-0.5">{r.beneficiary.phone}</p>
-                        )}
-                        {r.beneficiary?.address && (
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <MapPin size={10} strokeWidth={1.4} className="text-mute shrink-0" />
-                            <span className="text-[11px] text-mute">{r.beneficiary.address}</span>
-                          </div>
                         )}
                       </div>
                     </div>
