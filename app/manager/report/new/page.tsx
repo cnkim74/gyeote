@@ -353,42 +353,11 @@ export default function NewReportPage() {
         {/* 스트레스 지수 */}
         <div>
           <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">스트레스 지수</label>
-          <div className="bg-paper p-4 flex flex-col gap-3" style={border}>
-            <div className="flex gap-2">
-              {[
-                { v: 1, label: '매우 안정', color: '#2D6A4F', bg: '#E8F4EC' },
-                { v: 2, label: '안정',    color: '#4F9D6A', bg: '#F0FAF3' },
-                { v: 3, label: '보통',    color: '#B58900', bg: '#FFF8E1' },
-                { v: 4, label: '약간 높음', color: '#C2540A', bg: '#FEF3EB' },
-                { v: 5, label: '매우 높음', color: '#B91C1C', bg: '#FDE8E8' },
-              ].map(opt => {
-                const active = form.stress_score === opt.v;
-                return (
-                  <button
-                    key={opt.v}
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, stress_score: active ? 0 : opt.v }))}
-                    className="flex-1 flex flex-col items-center gap-1.5 py-3 transition-all"
-                    style={{
-                      border: `1.5px solid ${active ? opt.color : 'rgba(42,40,35,0.15)'}`,
-                      background: active ? opt.bg : 'transparent',
-                    }}
-                  >
-                    <span style={{ fontSize: 16, fontWeight: 700, color: active ? opt.color : 'rgba(42,40,35,0.35)' }}>
-                      {opt.v}
-                    </span>
-                    <span style={{ fontSize: 10, color: active ? opt.color : '#9B9488', letterSpacing: '0.05em', textAlign: 'center', lineHeight: 1.3 }}>
-                      {opt.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            {form.stress_score > 0 && (
-              <p className="text-[12px] text-mute">
-                선택: <span className="font-medium text-ink">{['', '매우 안정', '안정', '보통', '약간 높음', '매우 높음'][form.stress_score]}</span> ({form.stress_score}/5)
-              </p>
-            )}
+          <div className="bg-paper p-4" style={border}>
+            <StarRating
+              value={form.stress_score}
+              onChange={v => setForm(f => ({ ...f, stress_score: v }))}
+            />
           </div>
         </div>
 

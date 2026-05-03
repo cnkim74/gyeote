@@ -35,8 +35,6 @@ interface ReportDocumentProps {
   backHref?: string;
 }
 
-const STRESS_LABELS = ['', '매우 안정', '안정', '보통', '약간 높음', '매우 높음'];
-const STRESS_COLORS = ['', '#2D6A4F', '#4F9D6A', '#B58900', '#C2540A', '#B91C1C'];
 
 function korDateTime(date: string, time: string | null) {
   const dt = new Date(date + 'T00:00:00');
@@ -257,37 +255,26 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
                 <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
                   스트레스 지수
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {Array.from({ length: 5 }, (_, i) => {
-                      const level = i + 1;
-                      const filled = level <= report.stress_score!;
-                      const color = STRESS_COLORS[level];
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ display: 'flex', gap: 3 }}>
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const filled = i + 1 <= report.stress_score!;
                       return (
-                        <div
-                          key={i}
-                          style={{
-                            width: 22,
-                            height: 22,
-                            borderRadius: '50%',
-                            background: filled ? color : 'transparent',
-                            border: `2px solid ${filled ? color : 'rgba(42,40,35,0.18)'}`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          {filled && (
-                            <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>{level}</span>
-                          )}
-                        </div>
+                        <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"
+                            fill={filled ? '#E8A318' : 'none'}
+                            stroke={filled ? '#E8A318' : 'rgba(42,40,35,0.2)'}
+                            strokeWidth="1.5"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
                       );
                     })}
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: STRESS_COLORS[report.stress_score] }}>
-                    {STRESS_LABELS[report.stress_score]}
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#B5820A' }}>
+                    {report.stress_score} / 10
                   </span>
-                  <span style={{ fontSize: 12, color: '#9B9488' }}>({report.stress_score} / 5)</span>
                 </div>
               </div>
             </>
