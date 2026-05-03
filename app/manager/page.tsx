@@ -204,7 +204,10 @@ export default async function ManagerPage() {
           </a>
 
           <div>
-            <p className="text-[11px] tracking-[0.15em] uppercase text-mute mb-3">최근 방문 기록</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] tracking-[0.15em] uppercase text-mute">최근 방문 기록</p>
+              <Link href="/manager/reports" className="text-[11px] text-primary hover:underline">전체 보기</Link>
+            </div>
             {recentReports.length === 0 ? (
               <div className="bg-paper p-8 text-center" style={border}>
                 <p className="text-[13px] text-mute">작성한 보고서가 없습니다</p>
