@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -27,8 +27,6 @@ interface Client {
 
 export default function NewReportPage() {
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
-
   const [managerId, setManagerId] = useState('');
   const [managerName, setManagerName] = useState('');
   const [managerPhone, setManagerPhone] = useState('');
@@ -565,24 +563,21 @@ export default function NewReportPage() {
           )}
 
           {photoFiles.length < MAX_PHOTOS && (
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="w-full flex items-center justify-center gap-2 py-4 text-[13px] text-mute hover:text-ink transition-colors bg-paper hover:bg-paper/80"
+            <label
+              className="w-full flex items-center justify-center gap-2 py-4 text-[13px] text-mute hover:text-ink transition-colors bg-paper hover:bg-paper/80 cursor-pointer"
               style={border}
             >
               <Camera size={16} strokeWidth={1.4} />
               사진 추가 ({photoFiles.length}/{MAX_PHOTOS})
-            </button>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handlePhotoSelect}
+              />
+            </label>
           )}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handlePhotoSelect}
-          />
         </div>
 
         {/* 매니저 서명 */}
