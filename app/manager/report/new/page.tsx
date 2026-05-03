@@ -402,11 +402,22 @@ export default function NewReportPage() {
               </button>
             </div>
             {form.use_default_location ? (
-              <div className="flex items-center gap-2">
-                <MapPin size={12} strokeWidth={1.4} className="text-mute shrink-0" />
-                <p className="text-[13px] text-mute">
-                  {selectedClient?.address ?? clients[0]?.address ?? '어르신 등록 주소 사용'}
-                </p>
+              <div className="flex items-start gap-2">
+                <MapPin size={12} strokeWidth={1.4} className="text-mute shrink-0 mt-0.5" />
+                <div>
+                  {(() => {
+                    const c = clients.find(c => c.id === form.beneficiary_id) ?? clients[0];
+                    if (c?.address) {
+                      return (
+                        <>
+                          <p className="text-[13px] text-ink">{c.address}</p>
+                          {c.address_detail && <p className="text-[12px] text-mute mt-0.5">{c.address_detail}</p>}
+                        </>
+                      );
+                    }
+                    return <p className="text-[13px] text-mute">등록된 주소가 없습니다</p>;
+                  })()}
+                </div>
               </div>
             ) : (
               <input
