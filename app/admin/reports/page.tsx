@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { CheckCircle, XCircle, Clock, User, Phone, MapPin, Calendar, FileText } from 'lucide-react';
 
 type Status = 'pending' | 'approved' | 'rejected';
@@ -41,17 +40,9 @@ export default function ReportsPage() {
 
   async function load() {
     setLoading(true);
-    const supabase = createClient();
-    const { data } = await supabase
-      .from('visit_reports')
-      .select(`
-        *,
-        manager:manager_id(id, name, phone, avatar_url),
-        beneficiary:beneficiary_id(id, name, phone, address, address_detail, avatar_url)
-      `)
-      .eq('status', tab)
-      .order('created_at', { ascending: false });
-    setReports(data ?? []);
+    const res = await fetch(`/api/admin/reports?status=${tab}`);
+    const data = res.ok ? await res.json() : [];
+    setReports(data);
     setLoading(false);
   }
 
@@ -75,11 +66,11 @@ export default function ReportsPage() {
   async function reject(id: string) {
     if (!rejectReason.trim()) return;
     setProcessing(true);
-    const supabase = createClient();
-    await supabase.from('visit_reports').update({
-      status: 'rejected',
-      rejection_reason: rejectReason.trim(),
-    }).eq('id', id);
+    await fetch('/api/admin/reject-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reportId: id, reason: rejectReason.trim() }),
+    });
     setRejectId(null);
     setRejectReason('');
     setProcessing(false);
