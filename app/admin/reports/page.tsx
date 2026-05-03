@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { CheckCircle, XCircle, Clock, User, Phone, MapPin, Calendar } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, User, Phone, MapPin, Calendar, FileText } from 'lucide-react';
 
 type Status = 'pending' | 'approved' | 'rejected';
 
@@ -266,10 +267,7 @@ export default function ReportsPage() {
                     ) : (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => {
-                            // subscriptionId 조회는 서버에서 처리 — 일단 null 전달
-                            approve(r.id, null);
-                          }}
+                          onClick={() => approve(r.id, null)}
                           disabled={processing}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] bg-primary text-surface hover:bg-primary-deep disabled:opacity-50 transition-colors"
                         >
@@ -285,6 +283,13 @@ export default function ReportsPage() {
                           <XCircle size={14} strokeWidth={1.4} />
                           반려
                         </button>
+                        <Link
+                          href={`/admin/report/${r.id}`}
+                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 text-[13px] text-mute bg-paper hover:text-ink transition-colors"
+                          style={border}
+                        >
+                          <FileText size={14} strokeWidth={1.4} />
+                        </Link>
                       </div>
                     )}
                   </div>

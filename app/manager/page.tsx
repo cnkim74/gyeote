@@ -181,14 +181,14 @@ export default async function ManagerPage() {
                 {recentReports.map(r => {
                   const m = MOOD[r.mood as keyof typeof MOOD] ?? MOOD.good;
                   return (
-                    <div key={r.id} className="bg-paper px-4 py-3.5" style={border}>
+                    <Link key={r.id} href={`/manager/report/${r.id}`} className="bg-paper px-4 py-3.5 hover:bg-primary/5 transition-colors block" style={border}>
                       <div className="flex items-center justify-between mb-1.5">
                         <p className="text-[12px] text-mute">{shortDate(r.visit_date)}</p>
                         <span className={`${m.bg} ${m.text} text-[10.5px] px-2 py-0.5`}>{m.label}</span>
                       </div>
                       <p className="text-[12px] text-ink/80 mb-1">{(r.beneficiary as any)?.name}</p>
                       <p className="text-[12px] text-mute line-clamp-2 leading-[1.6]">{r.summary}</p>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

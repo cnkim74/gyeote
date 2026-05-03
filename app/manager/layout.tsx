@@ -23,7 +23,7 @@ export default async function ManagerLayout({ children }: { children: React.Reac
   return (
     <div className="min-h-screen bg-surface">
       <header
-        className="fixed top-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-sm h-16 flex items-center px-6 md:px-10 justify-between"
+        className="print:hidden fixed top-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-sm h-16 flex items-center px-6 md:px-10 justify-between"
         style={{ borderBottom: '0.5px solid rgba(42,40,35,0.18)' }}
       >
         <div className="flex items-center gap-6">
