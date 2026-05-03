@@ -115,7 +115,7 @@ export default function NewReportPage() {
       const url = URL.createObjectURL(f);
       setPreviews(prev => [...prev, url]);
     });
-    if (fileRef.current) fileRef.current.value = '';
+
   }
 
   function removePhoto(idx: number) {
