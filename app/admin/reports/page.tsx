@@ -46,8 +46,8 @@ export default function ReportsPage() {
       .from('visit_reports')
       .select(`
         *,
-        manager:manager_id(id, name, phone),
-        beneficiary:beneficiary_id(id, name, phone, address, address_detail)
+        manager:manager_id(id, name, phone, avatar_url),
+        beneficiary:beneficiary_id(id, name, phone, address, address_detail, avatar_url)
       `)
       .eq('status', tab)
       .order('created_at', { ascending: false });
@@ -159,36 +159,46 @@ export default function ReportsPage() {
                   {/* Manager */}
                   <div>
                     <p className="text-[10px] tracking-[0.12em] uppercase text-mute mb-1.5">매니저</p>
-                    <div className="flex items-center gap-1.5">
-                      <User size={12} strokeWidth={1.4} className="text-mute" />
-                      <span className="text-[13px] text-ink">{r.manager?.name}</span>
-                    </div>
-                    {r.manager?.phone && (
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <Phone size={12} strokeWidth={1.4} className="text-mute" />
-                        <span className="text-[12px] text-mute">{r.manager.phone}</span>
+                    <div className="flex items-center gap-2.5">
+                      {r.manager?.avatar_url ? (
+                        <img src={r.manager.avatar_url} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-[#EFF4F8] flex items-center justify-center text-[12px] font-bold text-primary shrink-0">
+                          {r.manager?.name?.[0] ?? '?'}
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-[13px] text-ink">{r.manager?.name}</span>
+                        {r.manager?.phone && (
+                          <p className="text-[11px] text-mute mt-0.5">{r.manager.phone}</p>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
                   {/* Beneficiary */}
                   <div>
                     <p className="text-[10px] tracking-[0.12em] uppercase text-mute mb-1.5">방문 어르신</p>
-                    <div className="flex items-center gap-1.5">
-                      <User size={12} strokeWidth={1.4} className="text-mute" />
-                      <span className="text-[13px] text-ink">{r.beneficiary?.name}</span>
+                    <div className="flex items-center gap-2.5">
+                      {r.beneficiary?.avatar_url ? (
+                        <img src={r.beneficiary.avatar_url} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-[#E8F4EC] flex items-center justify-center text-[12px] font-bold text-primary shrink-0">
+                          {r.beneficiary?.name?.[0] ?? '?'}
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-[13px] text-ink">{r.beneficiary?.name}</span>
+                        {r.beneficiary?.phone && (
+                          <p className="text-[11px] text-mute mt-0.5">{r.beneficiary.phone}</p>
+                        )}
+                        {r.beneficiary?.address && (
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <MapPin size={10} strokeWidth={1.4} className="text-mute shrink-0" />
+                            <span className="text-[11px] text-mute">{r.beneficiary.address}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    {r.beneficiary?.phone && (
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <Phone size={12} strokeWidth={1.4} className="text-mute" />
-                        <span className="text-[12px] text-mute">{r.beneficiary.phone}</span>
-                      </div>
-                    )}
-                    {r.beneficiary?.address && (
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <MapPin size={12} strokeWidth={1.4} className="text-mute" />
-                        <span className="text-[12px] text-mute">{r.beneficiary.address}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
 

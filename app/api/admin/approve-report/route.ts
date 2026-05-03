@@ -71,6 +71,9 @@ export async function POST(req: NextRequest) {
     payerName = payer?.name ?? null;
   }
 
+  // Get manager phone for notification
+  const managerPhone = (report.manager as any)?.phone ?? null;
+
   const visitDate = new Date(report.visit_date + 'T00:00:00')
     .toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
   const moodLabel = ({ good: '좋음', fair: '보통', concern: '관심 필요' } as Record<string, string>)[report.mood] ?? report.mood;
@@ -125,6 +128,28 @@ export async function POST(req: NextRequest) {
       }
     } catch (e) {
       console.error('[approve-report] SMS error:', e);
+    }
+  }
+
+  // SMS to manager (승인 알림)
+  if (managerPhone && process.env.ALIGO_API_KEY && process.env.ALIGO_USER_ID && process.env.ALIGO_SENDER) {
+    try {
+      const msg = `[곁에] 보고서 승인 완료\n대상자: ${report.beneficiary?.name ?? '어르신'}\n방문일: ${report.visit_date}\n보고서가 승인되었습니다.`;
+      const params = new URLSearchParams({
+        key: process.env.ALIGO_API_KEY,
+        user_id: process.env.ALIGO_USER_ID,
+        sender: process.env.ALIGO_SENDER,
+        receiver: managerPhone.replace(/-/g, ''),
+        msg,
+        msg_type: 'SMS',
+      });
+      await fetch('https://apis.aligo.in/send/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
+      });
+    } catch (e) {
+      console.error('[approve-report] manager SMS error:', e);
     }
   }
 

@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import Link from 'next/link';
-import { CalendarDays, Users, PenLine, CheckCircle } from 'lucide-react';
+import { CalendarDays, Users, PenLine, CheckCircle, Clock } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { KakaoMap } from '@/components/KakaoMap';
 import { VisitCalendar } from '@/components/VisitCalendar';
 import { VisitStickers } from '@/components/VisitStickers';
+import { CalendarButtons } from '@/components/CalendarButtons';
 import type { CalendarVisit } from '@/components/VisitCalendar';
 import type { VisitStickerItem } from '@/components/VisitStickers';
 
@@ -47,6 +48,8 @@ export default async function ManagerPage() {
 
   const thisMonth = new Date().getMonth();
   const monthlyCount = reports.filter(r => new Date(r.visit_date).getMonth() === thisMonth).length;
+  const pendingCount = reports.filter(r => r.status === 'pending').length;
+  const approvedCount = reports.filter(r => r.status === 'approved').length;
 
   const recentReports = reports.slice(0, 8);
 
@@ -84,15 +87,13 @@ export default async function ManagerPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
         <div className="bg-paper p-5" style={border}>
           <div className="flex items-center gap-2 mb-3">
             <Users size={13} strokeWidth={1.4} className="text-mute" />
             <p className="text-[10.5px] tracking-[0.15em] uppercase text-mute">담당 어르신</p>
           </div>
-          <p className="font-serif-ko font-black text-[36px] text-ink leading-none">
-            {clients.length}
-          </p>
+          <p className="font-serif-ko font-black text-[36px] text-ink leading-none">{clients.length}</p>
           <p className="text-[12px] text-mute mt-1">명</p>
         </div>
         <div className="bg-paper p-5" style={border}>
@@ -100,10 +101,24 @@ export default async function ManagerPage() {
             <CheckCircle size={13} strokeWidth={1.4} className="text-mute" />
             <p className="text-[10.5px] tracking-[0.15em] uppercase text-mute">이번 달 방문</p>
           </div>
-          <p className="font-serif-ko font-black text-[36px] text-ink leading-none">
-            {monthlyCount}
-          </p>
+          <p className="font-serif-ko font-black text-[36px] text-ink leading-none">{monthlyCount}</p>
           <p className="text-[12px] text-mute mt-1">회</p>
+        </div>
+        <div className="bg-paper p-5" style={border}>
+          <div className="flex items-center gap-2 mb-3">
+            <Clock size={13} strokeWidth={1.4} className="text-amber-500" />
+            <p className="text-[10.5px] tracking-[0.15em] uppercase text-mute">승인 대기</p>
+          </div>
+          <p className="font-serif-ko font-black text-[36px] text-amber-500 leading-none">{pendingCount}</p>
+          <p className="text-[12px] text-mute mt-1">건</p>
+        </div>
+        <div className="bg-paper p-5" style={border}>
+          <div className="flex items-center gap-2 mb-3">
+            <CheckCircle size={13} strokeWidth={1.4} className="text-primary" />
+            <p className="text-[10.5px] tracking-[0.15em] uppercase text-mute">승인 완료</p>
+          </div>
+          <p className="font-serif-ko font-black text-[36px] text-primary leading-none">{approvedCount}</p>
+          <p className="text-[12px] text-mute mt-1">건</p>
         </div>
       </div>
 
@@ -120,7 +135,7 @@ export default async function ManagerPage() {
             <div className="flex flex-col gap-4">
               {clients.map(c => (
                 <div key={c.id} className="flex flex-col gap-2">
-                  <div className="bg-paper px-5 py-4 flex items-center gap-4" style={border}>
+                  <div className="bg-paper px-5 py-4 flex items-start gap-4" style={border}>
                     <div className="flex-1 min-w-0">
                       <p className="font-serif-ko text-[15px] text-ink">{c.beneficiary?.name ?? '이름 없음'}</p>
                       {c.beneficiary?.phone && (
@@ -130,10 +145,16 @@ export default async function ManagerPage() {
                     {c.next_visit_date && (
                       <div className="text-right shrink-0">
                         <p className="text-[10.5px] text-mute mb-0.5">다음 방문</p>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 justify-end">
                           <CalendarDays size={12} strokeWidth={1.4} className="text-mute" />
                           <p className="text-[13px] text-ink">{shortDate(c.next_visit_date)}</p>
                         </div>
+                        <CalendarButtons
+                          title={`${c.beneficiary?.name ?? '어르신'} 방문`}
+                          date={c.next_visit_date}
+                          address={(c.beneficiary as any)?.address ?? undefined}
+                          description={`담당 매니저 방문 일정`}
+                        />
                       </div>
                     )}
                   </div>
@@ -200,9 +221,20 @@ export default async function ManagerPage() {
                   const m = MOOD[r.mood as keyof typeof MOOD] ?? MOOD.good;
                   return (
                     <Link key={r.id} href={`/manager/report/${r.id}`} className="bg-paper px-4 py-3.5 hover:bg-primary/5 transition-colors block" style={border}>
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center justify-between mb-1.5 gap-1 flex-wrap">
                         <p className="text-[12px] text-mute">{shortDate(r.visit_date)}</p>
-                        <span className={`${m.bg} ${m.text} text-[10.5px] px-2 py-0.5`}>{m.label}</span>
+                        <div className="flex items-center gap-1">
+                          <span className={`${m.bg} ${m.text} text-[10.5px] px-2 py-0.5`}>{m.label}</span>
+                          {r.status === 'pending' && (
+                            <span className="bg-amber-50 text-amber-600 text-[10.5px] px-2 py-0.5">대기</span>
+                          )}
+                          {r.status === 'approved' && (
+                            <span className="bg-[#E8F4EC] text-[#2D6A4F] text-[10.5px] px-2 py-0.5">승인</span>
+                          )}
+                          {r.status === 'rejected' && (
+                            <span className="bg-[#FDE8E8] text-[#842029] text-[10.5px] px-2 py-0.5">반려</span>
+                          )}
+                        </div>
                       </div>
                       <p className="text-[12px] text-ink/80 mb-1">{(r.beneficiary as any)?.name}</p>
                       <p className="text-[12px] text-mute line-clamp-2 leading-[1.6]">{r.summary}</p>
