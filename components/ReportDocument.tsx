@@ -9,6 +9,8 @@ interface ReportData {
   id: string;
   visit_date: string;
   visit_time: string | null;
+  visit_end_time: string | null;
+  visit_location: string | null;
   mood: 'good' | 'fair' | 'concern';
   condition_score: number | null;
   stress_score: number | null;
@@ -35,6 +37,17 @@ interface ReportDocumentProps {
   backHref?: string;
 }
 
+
+function calcDuration(start: string | null, end: string | null) {
+  if (!start || !end) return null;
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  const mins = (eh * 60 + em) - (sh * 60 + sm);
+  if (mins <= 0) return null;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h > 0 ? `${h}시간 ${m > 0 ? m + '분' : ''}`.trim() : `${m}분`;
+}
 
 function korDateTime(date: string, time: string | null) {
   const dt = new Date(date + 'T00:00:00');
@@ -139,20 +152,42 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
           <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', marginBottom: 20 }}>
             <tbody>
               <tr>
-                <td style={{ width: 80, color: '#9B9488', paddingBottom: 8, whiteSpace: 'nowrap' }}>방문 일시</td>
-                <td style={{ paddingBottom: 8, color: '#2A2823', fontWeight: 500 }}>
-                  {korDateTime(report.visit_date, report.visit_time)}
+                <td style={{ width: 80, color: '#9B9488', paddingBottom: 6, whiteSpace: 'nowrap' }}>방문 일자</td>
+                <td style={{ paddingBottom: 6, color: '#2A2823', fontWeight: 500 }}>
+                  {korDateTime(report.visit_date, null)}
                 </td>
               </tr>
-              {report.beneficiary?.address && (
+              {report.visit_time && (
                 <tr>
-                  <td style={{ color: '#9B9488', paddingBottom: 4, whiteSpace: 'nowrap' }}>방문 장소</td>
-                  <td style={{ color: '#2A2823' }}>
-                    {report.beneficiary.address}
-                    {report.beneficiary.address_detail && ` ${report.beneficiary.address_detail}`}
+                  <td style={{ color: '#9B9488', paddingBottom: 6, whiteSpace: 'nowrap' }}>시작 시간</td>
+                  <td style={{ color: '#2A2823' }}>{report.visit_time.slice(0, 5)}</td>
+                </tr>
+              )}
+              {report.visit_end_time && (
+                <tr>
+                  <td style={{ color: '#9B9488', paddingBottom: 6, whiteSpace: 'nowrap' }}>종료 시간</td>
+                  <td style={{ color: '#2A2823' }}>{report.visit_end_time.slice(0, 5)}</td>
+                </tr>
+              )}
+              {calcDuration(report.visit_time, report.visit_end_time) && (
+                <tr>
+                  <td style={{ color: '#9B9488', paddingBottom: 6, whiteSpace: 'nowrap' }}>총 방문 시간</td>
+                  <td style={{ color: '#2C5F5D', fontWeight: 700 }}>
+                    {calcDuration(report.visit_time, report.visit_end_time)}
                   </td>
                 </tr>
               )}
+              <tr>
+                <td style={{ color: '#9B9488', paddingBottom: 4, whiteSpace: 'nowrap' }}>방문 장소</td>
+                <td style={{ color: '#2A2823' }}>
+                  {report.visit_location
+                    ? report.visit_location
+                    : report.beneficiary?.address
+                      ? `${report.beneficiary.address}${report.beneficiary.address_detail ? ' ' + report.beneficiary.address_detail : ''}`
+                      : '—'
+                  }
+                </td>
+              </tr>
             </tbody>
           </table>
 

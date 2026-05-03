@@ -37,14 +37,20 @@ export default function NewReportPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
+  const now = new Date();
+  const nowStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
   const [form, setForm] = useState({
     beneficiary_id: '',
-    visit_date: new Date().toISOString().split('T')[0],
-    visit_time: `${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`,
+    visit_date: now.toISOString().split('T')[0],
+    visit_start_time: nowStr,
+    visit_end_time: '',
     mood: 'good' as 'good' | 'fair' | 'concern',
     condition_score: 0,
     stress_score: 0,
     summary: '',
+    use_default_location: true,
+    visit_location: '',
   });
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -53,6 +59,17 @@ export default function NewReportPage() {
   const [error, setError] = useState('');
   const [aiKeywords, setAiKeywords] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+
+  function calcDuration(start: string, end: string) {
+    if (!start || !end) return null;
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const mins = (eh * 60 + em) - (sh * 60 + sm);
+    if (mins <= 0) return null;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return h > 0 ? `${h}시간 ${m > 0 ? m + '분' : ''}`.trim() : `${m}분`;
+  }
 
   useEffect(() => {
     const supabase = createClient();
@@ -179,13 +196,15 @@ export default function NewReportPage() {
       manager_id: managerId,
       beneficiary_id: form.beneficiary_id,
       visit_date: form.visit_date,
-      visit_time: form.visit_time || null,
+      visit_time: form.visit_start_time || null,
+      visit_end_time: form.visit_end_time || null,
       mood: form.mood,
       summary: form.summary.trim(),
       photos: photoUrls,
       signature_url: signatureUrl,
       condition_score: form.condition_score > 0 ? form.condition_score : null,
       stress_score: form.stress_score > 0 ? form.stress_score : null,
+      visit_location: form.use_default_location ? null : (form.visit_location.trim() || null),
       status: 'pending',
     });
 
@@ -309,7 +328,7 @@ export default function NewReportPage() {
         </div>
 
         {/* 날짜 + 시간 */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-3">
           <div>
             <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2">방문 일자 *</label>
             <input
@@ -322,18 +341,83 @@ export default function NewReportPage() {
               required
             />
           </div>
-          <div>
-            <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2 flex items-center gap-1.5">
-              <Clock size={11} strokeWidth={1.4} />
-              방문 시간
-            </label>
-            <input
-              type="time"
-              value={form.visit_time}
-              onChange={e => setForm(f => ({ ...f, visit_time: e.target.value }))}
-              className="w-full bg-paper px-4 py-3 text-[14px] text-ink focus:outline-none"
-              style={border}
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2 flex items-center gap-1.5">
+                <Clock size={11} strokeWidth={1.4} />
+                시작 시간
+              </label>
+              <input
+                type="time"
+                value={form.visit_start_time}
+                onChange={e => setForm(f => ({ ...f, visit_start_time: e.target.value }))}
+                className="w-full bg-paper px-4 py-3 text-[14px] text-ink focus:outline-none"
+                style={border}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2 flex items-center gap-1.5">
+                <Clock size={11} strokeWidth={1.4} />
+                종료 시간
+              </label>
+              <input
+                type="time"
+                value={form.visit_end_time}
+                onChange={e => setForm(f => ({ ...f, visit_end_time: e.target.value }))}
+                className="w-full bg-paper px-4 py-3 text-[14px] text-ink focus:outline-none"
+                style={border}
+              />
+            </div>
+          </div>
+          {calcDuration(form.visit_start_time, form.visit_end_time) && (
+            <div className="bg-primary/5 px-4 py-2.5 flex items-center gap-2" style={{ border: '0.5px solid rgba(44,95,93,0.2)' }}>
+              <Clock size={12} strokeWidth={1.4} className="text-primary" />
+              <span className="text-[13px] text-primary font-medium">
+                총 방문 시간 · {calcDuration(form.visit_start_time, form.visit_end_time)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* 방문 장소 */}
+        <div>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">방문 장소</label>
+          <div className="bg-paper p-4 flex flex-col gap-3" style={border}>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setForm(f => ({ ...f, use_default_location: true, visit_location: '' }))}
+                className={`flex-1 py-2.5 text-[13px] transition-colors ${form.use_default_location ? 'bg-primary text-surface' : 'bg-surface text-mute hover:text-ink'}`}
+                style={{ border: '0.5px solid rgba(42,40,35,0.18)' }}
+              >
+                기본 주소
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm(f => ({ ...f, use_default_location: false }))}
+                className={`flex-1 py-2.5 text-[13px] transition-colors ${!form.use_default_location ? 'bg-primary text-surface' : 'bg-surface text-mute hover:text-ink'}`}
+                style={{ border: '0.5px solid rgba(42,40,35,0.18)' }}
+              >
+                다른 장소
+              </button>
+            </div>
+            {form.use_default_location ? (
+              <div className="flex items-center gap-2">
+                <MapPin size={12} strokeWidth={1.4} className="text-mute shrink-0" />
+                <p className="text-[13px] text-mute">
+                  {selectedClient?.address ?? clients[0]?.address ?? '어르신 등록 주소 사용'}
+                </p>
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={form.visit_location}
+                onChange={e => setForm(f => ({ ...f, visit_location: e.target.value }))}
+                placeholder="방문 장소를 직접 입력해 주세요"
+                className="w-full bg-surface px-3 py-2.5 text-[13px] text-ink focus:outline-none"
+                style={{ border: '0.5px solid rgba(42,40,35,0.18)' }}
+              />
+            )}
           </div>
         </div>
 
