@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Camera, X, Send, User, Phone, Clock, MapPin } from 'lucide-react';
+import { SignaturePad } from '@/components/SignaturePad';
 
 const MOOD_OPTIONS = [
   { value: 'good',    label: '좋음',    desc: '안색·건강 상태가 좋아 보이셨습니다',      ring: 'ring-[#2D6A4F]', bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]' },
@@ -43,6 +44,7 @@ export default function NewReportPage() {
   });
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -114,14 +116,26 @@ export default function NewReportPage() {
     const photoUrls: string[] = [];
     for (const file of photoFiles) {
       const path = `${managerId}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-      const { error: upErr } = await supabase.storage
-        .from('visit-photos')
-        .upload(path, file);
+      const { error: upErr } = await supabase.storage.from('visit-photos').upload(path, file);
       if (!upErr) {
+        const { data: { publicUrl } } = supabase.storage.from('visit-photos').getPublicUrl(path);
+        photoUrls.push(publicUrl);
+      }
+    }
+
+    // Upload signature
+    let signatureUrl: string | null = null;
+    if (signatureDataUrl) {
+      const blob = await (await fetch(signatureDataUrl)).blob();
+      const sigPath = `signatures/${managerId}/${Date.now()}.png`;
+      const { error: sigErr } = await supabase.storage
+        .from('visit-photos')
+        .upload(sigPath, blob, { contentType: 'image/png' });
+      if (!sigErr) {
         const { data: { publicUrl } } = supabase.storage
           .from('visit-photos')
-          .getPublicUrl(path);
-        photoUrls.push(publicUrl);
+          .getPublicUrl(sigPath);
+        signatureUrl = publicUrl;
       }
     }
 
@@ -133,6 +147,7 @@ export default function NewReportPage() {
       mood: form.mood,
       summary: form.summary.trim(),
       photos: photoUrls,
+      signature_url: signatureUrl,
       status: 'pending',
     });
 
@@ -352,6 +367,20 @@ export default function NewReportPage() {
             className="hidden"
             onChange={handlePhotoSelect}
           />
+        </div>
+
+        {/* 매니저 서명 */}
+        <div>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">
+            매니저 서명
+          </label>
+          <SignaturePad
+            onSave={url => setSignatureDataUrl(url)}
+            onClear={() => setSignatureDataUrl(null)}
+          />
+          {signatureDataUrl && (
+            <p className="text-[11px] text-[#2D6A4F] mt-2">✓ 서명이 저장되었습니다. 제출 시 함께 업로드됩니다.</p>
+          )}
         </div>
 
         {error && <p className="text-[13px] text-accent">{error}</p>}

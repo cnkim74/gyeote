@@ -11,6 +11,7 @@ interface ReportData {
   mood: 'good' | 'fair' | 'concern';
   summary: string;
   photos: string[] | null;
+  signature_url: string | null;
   status: 'pending' | 'approved' | 'rejected';
   approved_at: string | null;
   rejection_reason: string | null;
@@ -290,15 +291,38 @@ export function ReportDocument({ report, approverName, backHref = '/manager' }: 
               <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 14, textTransform: 'uppercase' }}>
                 매니저 서명
               </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <span style={{ fontSize: 16, fontFamily: 'serif', fontWeight: 700, color: '#2A2823' }}>
-                  {report.manager?.name ?? ''}
-                </span>
-                <div style={{ width: 120, borderBottom: '1px solid #2A2823' }} />
-              </div>
-              <p style={{ fontSize: 11, color: '#9B9488', marginTop: 8 }}>
-                작성일 · {report.visit_date.replace(/-/g, '.')}
-              </p>
+              {report.signature_url ? (
+                <div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={report.signature_url}
+                    alt="서명"
+                    style={{
+                      height: 70,
+                      maxWidth: 220,
+                      objectFit: 'contain',
+                      display: 'block',
+                      borderBottom: '1px solid rgba(42,40,35,0.2)',
+                      paddingBottom: 4,
+                    }}
+                  />
+                  <p style={{ fontSize: 11, color: '#9B9488', marginTop: 8 }}>
+                    {report.manager?.name ?? ''} · {report.visit_date.replace(/-/g, '.')}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <span style={{ fontSize: 16, fontFamily: 'serif', fontWeight: 700, color: '#2A2823' }}>
+                      {report.manager?.name ?? ''}
+                    </span>
+                    <div style={{ width: 120, borderBottom: '1px solid #2A2823' }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#9B9488', marginTop: 8 }}>
+                    작성일 · {report.visit_date.replace(/-/g, '.')}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right: approval stamp or pending */}
