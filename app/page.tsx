@@ -10,8 +10,26 @@ import { Managers } from '@/components/home/Managers';
 import { Voices } from '@/components/home/Voices';
 import { FAQ } from '@/components/home/FAQ';
 import { CTA } from '@/components/home/CTA';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role === 'admin')   redirect('/admin');
+    if (profile?.role === 'manager') redirect('/manager');
+    if (profile?.role === 'paying')  redirect('/dashboard');
+    if (profile?.role === 'general') redirect('/mypage');
+  }
+
   return (
     <div className="min-h-screen">
       <Nav />
