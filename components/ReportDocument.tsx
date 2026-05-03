@@ -3,7 +3,7 @@
 import { Printer, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { ApprovalStamp } from './ApprovalStamp';
-import { MoodCharacterRow } from './MoodCharacter';
+import { MoodCharacterRow, type Gender } from './MoodCharacter';
 
 interface ReportData {
   id: string;
@@ -20,13 +20,15 @@ interface ReportData {
   status: 'pending' | 'approved' | 'rejected';
   approved_at: string | null;
   rejection_reason: string | null;
-  manager: { id: string; name: string | null; phone: string | null } | null;
+  manager: { id: string; name: string | null; phone: string | null; avatar_url?: string | null } | null;
   beneficiary: {
     id: string;
     name: string | null;
     phone: string | null;
     address: string | null;
     address_detail: string | null;
+    avatar_url?: string | null;
+    gender?: string | null;
   } | null;
 }
 
@@ -199,43 +201,79 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
               <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 10, textTransform: 'uppercase' }}>
                 대상자 정보
               </p>
-              <table style={{ fontSize: 13, borderCollapse: 'collapse' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6, whiteSpace: 'nowrap' }}>성명</td>
-                    <td style={{ color: '#2A2823', fontWeight: 600, fontFamily: 'serif', fontSize: 15 }}>
-                      {report.beneficiary?.name ?? '—'}
-                    </td>
-                  </tr>
-                  {report.beneficiary?.phone && (
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {report.beneficiary?.avatar_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={report.beneficiary.avatar_url}
+                    alt=""
+                    style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 10, flexShrink: 0,
+                    background: '#E8F4EC', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#2C5F5D',
+                  }}>
+                    {report.beneficiary?.name?.[0] ?? '?'}
+                  </div>
+                )}
+                <table style={{ fontSize: 13, borderCollapse: 'collapse' }}>
+                  <tbody>
                     <tr>
-                      <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6 }}>연락처</td>
-                      <td style={{ color: '#2A2823' }}>{report.beneficiary.phone}</td>
+                      <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6, whiteSpace: 'nowrap' }}>성명</td>
+                      <td style={{ color: '#2A2823', fontWeight: 600, fontFamily: 'serif', fontSize: 15 }}>
+                        {report.beneficiary?.name ?? '—'}
+                      </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                    {report.beneficiary?.phone && (
+                      <tr>
+                        <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6 }}>연락처</td>
+                        <td style={{ color: '#2A2823' }}>{report.beneficiary.phone}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div>
               <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 10, textTransform: 'uppercase' }}>
                 담당 매니저
               </p>
-              <table style={{ fontSize: 13, borderCollapse: 'collapse' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6, whiteSpace: 'nowrap' }}>성명</td>
-                    <td style={{ color: '#2A2823', fontWeight: 600, fontFamily: 'serif', fontSize: 15 }}>
-                      {report.manager?.name ?? '—'}
-                    </td>
-                  </tr>
-                  {report.manager?.phone && (
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {report.manager?.avatar_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={report.manager.avatar_url}
+                    alt=""
+                    style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 10, flexShrink: 0,
+                    background: '#EFF4F8', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#2C5F5D',
+                  }}>
+                    {report.manager?.name?.[0] ?? '?'}
+                  </div>
+                )}
+                <table style={{ fontSize: 13, borderCollapse: 'collapse' }}>
+                  <tbody>
                     <tr>
-                      <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6 }}>연락처</td>
-                      <td style={{ color: '#2A2823' }}>{report.manager.phone}</td>
+                      <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6, whiteSpace: 'nowrap' }}>성명</td>
+                      <td style={{ color: '#2A2823', fontWeight: 600, fontFamily: 'serif', fontSize: 15 }}>
+                        {report.manager?.name ?? '—'}
+                      </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                    {report.manager?.phone && (
+                      <tr>
+                        <td style={{ color: '#9B9488', paddingRight: 16, paddingBottom: 6 }}>연락처</td>
+                        <td style={{ color: '#2A2823' }}>{report.manager.phone}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -246,7 +284,7 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
             <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 14, textTransform: 'uppercase' }}>
               안부 상태
             </p>
-            <MoodCharacterRow selected={report.mood} />
+            <MoodCharacterRow selected={report.mood} gender={report.beneficiary?.gender as Gender} />
           </div>
 
           {/* ── Condition score ── */}
@@ -342,15 +380,14 @@ export function ReportDocument({ report, approverName, approverStampUrl, backHre
                 <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
                   사진 기록
                 </p>
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  {report.photos.map((url, i) => (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+                  {report.photos.slice(0, 8).map((url, i) => (
                     <div
                       key={i}
                       style={{
-                        width: 120, height: 120,
+                        aspectRatio: '1',
                         overflow: 'hidden',
                         border: '0.5px solid rgba(42,40,35,0.18)',
-                        flexShrink: 0,
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}

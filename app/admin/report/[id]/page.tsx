@@ -14,8 +14,8 @@ export default async function AdminReportViewPage({ params }: { params: { id: st
     .from('visit_reports')
     .select(`
       *,
-      manager:manager_id(id, name, phone),
-      beneficiary:beneficiary_id(id, name, phone, address, address_detail)
+      manager:manager_id(id, name, phone, avatar_url),
+      beneficiary:beneficiary_id(id, name, phone, address, address_detail, avatar_url, gender)
     `)
     .eq('id', params.id)
     .single();

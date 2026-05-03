@@ -57,27 +57,17 @@ export default function ReportsPage() {
 
   useEffect(() => { load(); }, [tab]);
 
-  async function approve(id: string, subscriptionId: string | null) {
+  async function approve(id: string) {
     setProcessing(true);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    await supabase.from('visit_reports').update({
-      status: 'approved',
-      approved_at: new Date().toISOString(),
-      approved_by: user?.id,
-    }).eq('id', id);
-
-    // 정산 레코드 생성
-    if (subscriptionId) {
-      await supabase.from('payments').insert({
-        subscription_id: subscriptionId,
-        visit_report_id: id,
-        amount: 0,
-        status: 'pending',
+    try {
+      await fetch('/api/admin/approve-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportId: id }),
       });
+    } catch (e) {
+      console.error('approve error:', e);
     }
-
     setProcessing(false);
     load();
   }
@@ -267,7 +257,7 @@ export default function ReportsPage() {
                     ) : (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => approve(r.id, null)}
+                          onClick={() => approve(r.id)}
                           disabled={processing}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] bg-primary text-surface hover:bg-primary-deep disabled:opacity-50 transition-colors"
                         >
