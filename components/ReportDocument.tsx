@@ -9,6 +9,7 @@ interface ReportData {
   visit_date: string;
   visit_time: string | null;
   mood: 'good' | 'fair' | 'concern';
+  condition_score: number | null;
   summary: string;
   photos: string[] | null;
   signature_url: string | null;
@@ -233,6 +234,39 @@ export function ReportDocument({ report, approverName, backHref = '/manager' }: 
               })}
             </div>
           </div>
+
+          {/* ── Condition score ── */}
+          {report.condition_score != null && report.condition_score > 0 && (
+            <>
+              <div style={line} />
+              <div style={{ margin: '20px 0' }}>
+                <p style={{ fontSize: 10, letterSpacing: '0.18em', color: '#9B9488', marginBottom: 12, textTransform: 'uppercase' }}>
+                  건강 상태 점수
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ display: 'flex', gap: 3 }}>
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const filled = i + 1 <= report.condition_score!;
+                      return (
+                        <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"
+                            fill={filled ? '#E8A318' : 'none'}
+                            stroke={filled ? '#E8A318' : 'rgba(42,40,35,0.2)'}
+                            strokeWidth="1.5"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      );
+                    })}
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#B5820A' }}>
+                    {report.condition_score} / 10
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
 
           <div style={line} />
 

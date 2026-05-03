@@ -22,8 +22,10 @@ export function KakaoMap({ name, address, addressDetail }: KakaoMapProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState('');
 
+  // 지오코딩은 도로명 주소만 사용 (동호수 포함 시 검색 실패)
+  const geocodeAddress = address ?? '';
   const fullAddress = addressDetail ? `${address} ${addressDetail}` : (address ?? '');
-  const encodedAddress = encodeURIComponent(fullAddress);
+  const encodedAddress = encodeURIComponent(geocodeAddress);
   const encodedName = encodeURIComponent(name ?? '방문지');
 
   const kakaoWebUrl = `https://map.kakao.com/?q=${encodedAddress}`;

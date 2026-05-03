@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Camera, X, Send, User, Phone, Clock, MapPin } from 'lucide-react';
 import { SignaturePad } from '@/components/SignaturePad';
+import { StarRating } from '@/components/StarRating';
 
 const MOOD_OPTIONS = [
   { value: 'good',    label: '좋음',    desc: '안색·건강 상태가 좋아 보이셨습니다',      ring: 'ring-[#2D6A4F]', bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]' },
@@ -40,6 +41,7 @@ export default function NewReportPage() {
     visit_date: new Date().toISOString().split('T')[0],
     visit_time: `${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`,
     mood: 'good' as 'good' | 'fair' | 'concern',
+    condition_score: 0,
     summary: '',
   });
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
@@ -148,6 +150,7 @@ export default function NewReportPage() {
       summary: form.summary.trim(),
       photos: photoUrls,
       signature_url: signatureUrl,
+      condition_score: form.condition_score > 0 ? form.condition_score : null,
       status: 'pending',
     });
 
@@ -305,6 +308,17 @@ export default function NewReportPage() {
                 </div>
               </label>
             ))}
+          </div>
+        </div>
+
+        {/* 건강 상태 점수 */}
+        <div>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">건강 상태 점수</label>
+          <div className="bg-paper p-4" style={border}>
+            <StarRating
+              value={form.condition_score}
+              onChange={v => setForm(f => ({ ...f, condition_score: v }))}
+            />
           </div>
         </div>
 
