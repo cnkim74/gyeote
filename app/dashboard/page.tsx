@@ -83,7 +83,7 @@ export default async function DashboardPage() {
     <div className="max-w-5xl mx-auto px-6 md:px-10 py-10">
       {/* Title */}
       <div className="mb-10">
-        <p className="font-en text-[11px] tracking-[0.2em] uppercase text-mute mb-2">Dashboard</p>
+        <p className="font-en text-[14px] tracking-[0.22em] uppercase text-mute mb-2">Dashboard</p>
         <h1 className="font-serif-ko font-black text-ink text-[30px] md:text-[36px] leading-[1.15]">
           {sub?.beneficiary?.name ?? '부모님'} 어르신 안부
         </h1>
