@@ -113,6 +113,7 @@ export default function NewReportPage() {
   async function handleAiDraft() {
     if (!aiKeywords.trim()) return;
     setAiLoading(true);
+    setError('');
     try {
       const res = await fetch('/api/ai/draft-report', {
         method: 'POST',
@@ -126,9 +127,13 @@ export default function NewReportPage() {
         }),
       });
       const data = await res.json();
-      if (data.draft) setForm(f => ({ ...f, summary: data.draft }));
-    } catch {
-      // silently fail
+      if (data.draft) {
+        setForm(f => ({ ...f, summary: data.draft }));
+      } else {
+        setError(`AI 오류: ${data.error ?? '알 수 없는 오류'}`);
+      }
+    } catch (e: any) {
+      setError(`AI 연결 실패: ${e?.message ?? '네트워크 오류'}`);
     } finally {
       setAiLoading(false);
     }

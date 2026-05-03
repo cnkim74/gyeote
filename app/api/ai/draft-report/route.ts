@@ -35,9 +35,13 @@ ${keywords}
 - 특이사항이나 다음 방문 시 유의할 점으로 마무리
 - 제목 없이 본문만 작성`;
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
-
-  return NextResponse.json({ draft: text });
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    return NextResponse.json({ draft: text });
+  } catch (e: any) {
+    console.error('Gemini error:', e);
+    return NextResponse.json({ error: e?.message ?? 'Gemini API 오류' }, { status: 500 });
+  }
 }
