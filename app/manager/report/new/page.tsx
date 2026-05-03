@@ -162,10 +162,17 @@ export default function NewReportPage() {
 
     const supabase = createClient();
 
+    // Get user ID fresh from auth (don't rely on async state)
+    const { data: { user } } = await supabase.auth.getUser();
+    const uid = user?.id;
+    if (!uid) { setError('로그인이 필요합니다.'); setLoading(false); return; }
+
     // Upload photos
     const photoUrls: string[] = [];
-    for (const file of photoFiles) {
-      const path = `${managerId}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+    for (let i = 0; i < photoFiles.length; i++) {
+      const file = photoFiles[i];
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
+      const path = `${uid}/${Date.now()}_${i}.${ext}`;
       const { error: upErr } = await supabase.storage.from('visit-photos').upload(path, file);
       if (upErr) {
         setError(`사진 업로드 실패: ${upErr.message}`);
@@ -180,7 +187,7 @@ export default function NewReportPage() {
     let signatureUrl: string | null = null;
     if (signatureDataUrl) {
       const blob = await (await fetch(signatureDataUrl)).blob();
-      const sigPath = `signatures/${managerId}/${Date.now()}.png`;
+      const sigPath = `signatures/${uid}/${Date.now()}.png`;
       const { error: sigErr } = await supabase.storage
         .from('visit-photos')
         .upload(sigPath, blob, { contentType: 'image/png' });
@@ -193,7 +200,7 @@ export default function NewReportPage() {
     }
 
     const { error: err } = await supabase.from('visit_reports').insert({
-      manager_id: managerId,
+      manager_id: uid,
       beneficiary_id: form.beneficiary_id,
       visit_date: form.visit_date,
       visit_time: form.visit_start_time || null,
