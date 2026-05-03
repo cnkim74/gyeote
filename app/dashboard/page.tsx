@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { CalendarDays, User, CreditCard, Clock } from 'lucide-react';
+import { CalendarDays, User, CreditCard, Clock, Star } from 'lucide-react';
+import Link from 'next/link';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { PLAN_LABELS, STATUS_LABELS } from '@/types';
 import { KakaoMap } from '@/components/KakaoMap';
@@ -282,7 +283,7 @@ export default async function DashboardPage() {
               </div>
             )}
 
-            {/* Manager info */}
+            {/* Manager info + feedback */}
             {sub.manager && (
               <div className="bg-paper p-5" style={border}>
                 <div className="flex items-center gap-2 mb-4">
@@ -291,8 +292,15 @@ export default async function DashboardPage() {
                 </div>
                 <p className="font-serif-ko text-[18px] text-ink mb-1">{sub.manager.name}</p>
                 {sub.manager.phone && (
-                  <p className="text-[13px] text-mute">{sub.manager.phone}</p>
+                  <p className="text-[13px] text-mute mb-4">{sub.manager.phone}</p>
                 )}
+                <Link
+                  href={`/feedback/${sub.manager.id}`}
+                  className="flex items-center gap-1.5 text-[12.5px] text-primary hover:text-primary-deep transition-colors"
+                >
+                  <Star size={12} strokeWidth={1.5} />
+                  매니저 피드백 남기기
+                </Link>
               </div>
             )}
 
