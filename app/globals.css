@@ -86,3 +86,28 @@ body {
   background-position: 0 100%;
   padding-bottom: 2px;
 }
+
+@media print {
+  html, body {
+    background: white !important;
+    color: #2A2823 !important;
+  }
+  /* Hide all layout chrome — header, sidebar, nav */
+  header, nav, aside, .no-print {
+    display: none !important;
+  }
+  /* Admin flex layout: remove height/overflow constraints */
+  .flex.h-screen {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  main {
+    overflow: visible !important;
+    height: auto !important;
+  }
+  /* Remove top padding added for fixed header */
+  .pt-16 {
+    padding-top: 0 !important;
+  }
+}
