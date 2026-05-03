@@ -29,11 +29,11 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
   const slide = images[current];
 
   return (
-    <section className="pt-28 md:pt-36 pb-0">
+    <section className="pt-24 md:pt-36 pb-0">
       <div className="max-w-page mx-auto px-6 md:px-10">
 
-        {/* Label row — full width of container */}
-        <div className="flex items-center gap-4 mb-10 md:mb-14">
+        {/* Label row */}
+        <div className="flex items-center gap-4 mb-8 md:mb-14">
           <span className="num text-[11px] tracking-[0.2em] text-mute whitespace-nowrap">no. 01</span>
           <div className="flex-1 h-px" style={{ background: 'var(--line)' }} />
           <span className="font-en text-[11px] tracking-[0.22em] uppercase text-mute whitespace-nowrap">
@@ -41,19 +41,19 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
           </span>
         </div>
 
-        {/* Two-column */}
-        <div className="flex items-start gap-10 md:gap-14">
+        {/* Mobile: stack vertically / Desktop: two columns */}
+        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-14">
 
-          {/* Left: text */}
-          <div className="flex-1 pb-16">
-            <h1 className="font-serif-ko font-black text-ink leading-[1.08] tracking-[-0.025em] text-[52px] md:text-[70px] lg:text-[86px] mb-8 md:mb-10">
+          {/* Text */}
+          <div className="flex-1 min-w-0">
+            <h1 className="font-serif-ko font-black text-ink leading-[1.08] tracking-[-0.025em] text-[40px] md:text-[70px] lg:text-[86px] mb-6 md:mb-10">
               자녀를 대신해,
               <br />
               부모님 <span className="text-primary">곁에</span>.
             </h1>
 
             <p
-              className="text-[15px] md:text-[16px] text-ink/65 leading-[1.95] mb-10 md:mb-12 max-w-[380px]"
+              className="text-[15px] md:text-[16px] text-ink/65 leading-[1.95] mb-8 md:mb-12 max-w-[380px]"
               style={{ wordBreak: 'keep-all' }}
             >
               매주 전화로는 닿지 않는 거리.
@@ -62,7 +62,7 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
               전해드리는 동행 구독 서비스입니다.
             </p>
 
-            <div className="flex items-center gap-7 flex-wrap">
+            <div className="flex items-center gap-5 flex-wrap">
               <Link
                 href="/#cta"
                 className="inline-flex items-center bg-primary text-surface px-6 py-3.5 text-[14px] tracking-tight hover:bg-primary-deep transition-colors"
@@ -78,17 +78,16 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
             </div>
           </div>
 
-          {/* Right: image frame (액자) */}
+          {/* Image frame */}
           <div
-            className="shrink-0 relative overflow-hidden"
+            className="relative overflow-hidden w-full md:shrink-0 md:[width:clamp(300px,42%,500px)]"
             style={{
-              width: 'clamp(300px, 42%, 500px)',
               aspectRatio: '4 / 5',
               border: '0.5px solid rgba(42,40,35,0.18)',
             }}
           >
             <div
-              className="absolute inset-0 transition-opacity duration-500"
+              className="absolute inset-0 w-full h-full transition-opacity duration-500"
               style={{ opacity: fading ? 0 : 1 }}
             >
               <Image
@@ -97,13 +96,13 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
                 fill
                 className="object-cover"
                 priority
-                sizes="(max-width: 768px) 300px, 500px"
+                sizes="(max-width: 768px) 100vw, 500px"
               />
             </div>
 
             {/* Floating visit card */}
             <div
-              className="absolute bottom-6 left-5 bg-paper/95 backdrop-blur-sm px-4 py-3.5 max-w-[200px]"
+              className="absolute bottom-5 left-4 bg-paper/95 backdrop-blur-sm px-4 py-3.5 max-w-[200px]"
               style={{ border: '0.5px solid rgba(42,40,35,0.18)' }}
             >
               <p className="font-en text-[9.5px] tracking-[0.2em] uppercase text-mute mb-1.5">
@@ -137,13 +136,13 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
 
       {/* Bottom bar */}
       <div
-        className="mt-10 px-6 md:px-10 max-w-page mx-auto py-5 flex items-center justify-between text-[12.5px]"
+        className="mt-8 md:mt-10 px-6 md:px-10 max-w-page mx-auto py-4 md:py-5 flex items-center justify-between text-[12.5px] gap-4"
         style={{ borderTop: '0.5px solid rgba(42,40,35,0.18)' }}
       >
-        <span className="font-en italic text-mute">— 운영 슬로건</span>
-        <span className="font-serif-ko text-ink">오늘도 곁에 다녀왔습니다.</span>
-        <span className="font-en italic text-mute">Plate i.</span>
-        <span className="text-mute">{slide.caption}</span>
+        <span className="font-en italic text-mute hidden md:inline">— 운영 슬로건</span>
+        <span className="font-serif-ko text-ink whitespace-nowrap">오늘도 곁에 다녀왔습니다.</span>
+        <span className="font-en italic text-mute hidden md:inline">Plate i.</span>
+        <span className="text-mute text-[11px] truncate">{slide.caption}</span>
       </div>
     </section>
   );
