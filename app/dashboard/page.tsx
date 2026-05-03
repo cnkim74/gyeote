@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { CalendarDays, User, CreditCard, Clock } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { PLAN_LABELS, STATUS_LABELS } from '@/types';
-import { BeneficiaryMap } from '@/components/BeneficiaryMap';
+import { KakaoMap } from '@/components/KakaoMap';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
@@ -267,7 +267,7 @@ export default async function DashboardPage() {
 
             {/* Map */}
             {sub.beneficiary && (
-              <BeneficiaryMap
+              <KakaoMap
                 name={sub.beneficiary.name}
                 address={(sub.beneficiary as any).address ?? null}
                 addressDetail={(sub.beneficiary as any).address_detail ?? null}

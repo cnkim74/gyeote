@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import Link from 'next/link';
 import { CalendarDays, Users, PenLine, CheckCircle } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
+import { KakaoMap } from '@/components/KakaoMap';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
@@ -94,24 +95,31 @@ export default async function ManagerPage() {
               <p className="text-[13px] text-mute">아직 배정된 어르신이 없습니다</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
               {clients.map(c => (
-                <div key={c.id} className="bg-paper px-5 py-4 flex items-center gap-4" style={border}>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-serif-ko text-[15px] text-ink">{c.beneficiary?.name ?? '이름 없음'}</p>
-                    {c.beneficiary?.phone && (
-                      <p className="text-[12px] text-mute mt-0.5">{c.beneficiary.phone}</p>
+                <div key={c.id} className="flex flex-col gap-2">
+                  <div className="bg-paper px-5 py-4 flex items-center gap-4" style={border}>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-serif-ko text-[15px] text-ink">{c.beneficiary?.name ?? '이름 없음'}</p>
+                      {c.beneficiary?.phone && (
+                        <p className="text-[12px] text-mute mt-0.5">{c.beneficiary.phone}</p>
+                      )}
+                    </div>
+                    {c.next_visit_date && (
+                      <div className="text-right shrink-0">
+                        <p className="text-[10.5px] text-mute mb-0.5">다음 방문</p>
+                        <div className="flex items-center gap-1.5">
+                          <CalendarDays size={12} strokeWidth={1.4} className="text-mute" />
+                          <p className="text-[13px] text-ink">{shortDate(c.next_visit_date)}</p>
+                        </div>
+                      </div>
                     )}
                   </div>
-                  {c.next_visit_date && (
-                    <div className="text-right shrink-0">
-                      <p className="text-[10.5px] text-mute mb-0.5">다음 방문</p>
-                      <div className="flex items-center gap-1.5">
-                        <CalendarDays size={12} strokeWidth={1.4} className="text-mute" />
-                        <p className="text-[13px] text-ink">{shortDate(c.next_visit_date)}</p>
-                      </div>
-                    </div>
-                  )}
+                  <KakaoMap
+                    name={c.beneficiary?.name ?? null}
+                    address={(c.beneficiary as any)?.address ?? null}
+                    addressDetail={(c.beneficiary as any)?.address_detail ?? null}
+                  />
                 </div>
               ))}
             </div>
