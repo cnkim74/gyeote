@@ -4,6 +4,10 @@ import Link from 'next/link';
 import { CalendarDays, Users, PenLine, CheckCircle } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { KakaoMap } from '@/components/KakaoMap';
+import { VisitCalendar } from '@/components/VisitCalendar';
+import { VisitStickers } from '@/components/VisitStickers';
+import type { CalendarVisit } from '@/components/VisitCalendar';
+import type { VisitStickerItem } from '@/components/VisitStickers';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
@@ -32,17 +36,35 @@ export default async function ManagerPage() {
 
   const clients = (subs ?? []) as (Subscription & { beneficiary: Profile | null })[];
 
+  // All reports for this manager (no limit — for calendar and stickers)
   const { data: reportsRaw } = await admin
     .from('visit_reports')
     .select('*, beneficiary:beneficiary_id(id, name)')
     .eq('manager_id', user!.id)
-    .order('visit_date', { ascending: false })
-    .limit(8);
+    .order('visit_date', { ascending: false });
 
   const reports = (reportsRaw ?? []) as (VisitReport & { beneficiary: { name: string | null } | null })[];
 
   const thisMonth = new Date().getMonth();
   const monthlyCount = reports.filter(r => new Date(r.visit_date).getMonth() === thisMonth).length;
+
+  const recentReports = reports.slice(0, 8);
+
+  const calendarVisits: CalendarVisit[] = reports.map(r => ({
+    id: r.id,
+    visit_date: r.visit_date,
+    mood: r.mood as 'good' | 'fair' | 'concern',
+    status: r.status as 'pending' | 'approved' | 'rejected',
+    summary: r.summary,
+    beneficiary_name: (r.beneficiary as any)?.name ?? null,
+  }));
+
+  const stickerVisits: VisitStickerItem[] = reports.map(r => ({
+    id: r.id,
+    visit_date: r.visit_date,
+    mood: r.mood as 'good' | 'fair' | 'concern',
+    status: r.status as 'pending' | 'approved' | 'rejected',
+  }));
 
   return (
     <div className="max-w-4xl mx-auto px-6 md:px-10 py-10">
@@ -115,6 +137,20 @@ export default async function ManagerPage() {
                       </div>
                     )}
                   </div>
+
+                  {/* Per-client stickers */}
+                  {(() => {
+                    const clientVisits = stickerVisits.filter(v => {
+                      const cr = reports.find(r => r.id === v.id);
+                      return (cr?.beneficiary as any)?.name === c.beneficiary?.name;
+                    });
+                    return clientVisits.length > 0 ? (
+                      <div className="bg-paper px-5 py-4" style={border}>
+                        <VisitStickers visits={clientVisits} title={`${c.beneficiary?.name ?? ''} 누적 방문`} />
+                      </div>
+                    ) : null;
+                  })()}
+
                   <KakaoMap
                     name={c.beneficiary?.name ?? null}
                     address={(c.beneficiary as any)?.address ?? null}
@@ -126,34 +162,43 @@ export default async function ManagerPage() {
           )}
         </div>
 
-        {/* Recent reports */}
-        <div className="md:w-64 shrink-0 w-full">
-          <p className="text-[11px] tracking-[0.15em] uppercase text-mute mb-3">최근 방문 기록</p>
-          {reports.length === 0 ? (
-            <div className="bg-paper p-8 text-center" style={border}>
-              <p className="text-[13px] text-mute">작성한 보고서가 없습니다</p>
-              <Link
-                href="/manager/report/new"
-                className="inline-block mt-3 text-[13px] text-primary ulink"
-              >
-                첫 보고서 작성하기
-              </Link>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {reports.map(r => {
-                const m = MOOD[r.mood as keyof typeof MOOD] ?? MOOD.good;
-                return (
-                  <div key={r.id} className="bg-paper px-4 py-3.5" style={border}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <p className="text-[12px] text-mute">{shortDate(r.visit_date)}</p>
-                      <span className={`${m.bg} ${m.text} text-[10.5px] px-2 py-0.5`}>{m.label}</span>
+        {/* Right: Recent reports + Calendar */}
+        <div className="md:w-64 shrink-0 w-full flex flex-col gap-5">
+          <div>
+            <p className="text-[11px] tracking-[0.15em] uppercase text-mute mb-3">최근 방문 기록</p>
+            {recentReports.length === 0 ? (
+              <div className="bg-paper p-8 text-center" style={border}>
+                <p className="text-[13px] text-mute">작성한 보고서가 없습니다</p>
+                <Link
+                  href="/manager/report/new"
+                  className="inline-block mt-3 text-[13px] text-primary ulink"
+                >
+                  첫 보고서 작성하기
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {recentReports.map(r => {
+                  const m = MOOD[r.mood as keyof typeof MOOD] ?? MOOD.good;
+                  return (
+                    <div key={r.id} className="bg-paper px-4 py-3.5" style={border}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-[12px] text-mute">{shortDate(r.visit_date)}</p>
+                        <span className={`${m.bg} ${m.text} text-[10.5px] px-2 py-0.5`}>{m.label}</span>
+                      </div>
+                      <p className="text-[12px] text-ink/80 mb-1">{(r.beneficiary as any)?.name}</p>
+                      <p className="text-[12px] text-mute line-clamp-2 leading-[1.6]">{r.summary}</p>
                     </div>
-                    <p className="text-[12px] text-ink/80 mb-1">{r.beneficiary?.name}</p>
-                    <p className="text-[12px] text-mute line-clamp-2 leading-[1.6]">{r.summary}</p>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* My visit calendar */}
+          {calendarVisits.length > 0 && (
+            <div className="bg-paper p-4" style={border}>
+              <VisitCalendar visits={calendarVisits} showBeneficiaryName />
             </div>
           )}
         </div>

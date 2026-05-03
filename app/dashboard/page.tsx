@@ -4,6 +4,10 @@ import { CalendarDays, User, CreditCard, Clock } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { PLAN_LABELS, STATUS_LABELS } from '@/types';
 import { KakaoMap } from '@/components/KakaoMap';
+import { VisitCalendar } from '@/components/VisitCalendar';
+import { VisitStickers } from '@/components/VisitStickers';
+import type { CalendarVisit } from '@/components/VisitCalendar';
+import type { VisitStickerItem } from '@/components/VisitStickers';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
@@ -52,13 +56,28 @@ export default async function DashboardPage() {
       .from('visit_reports')
       .select('*, manager:manager_id(id, name)')
       .eq('beneficiary_id', sub.beneficiary_id)
-      .order('visit_date', { ascending: false })
-      .limit(10);
+      .order('visit_date', { ascending: false });
     reports = (data ?? []) as any;
   }
 
   const latest = reports[0] ?? null;
-  const prev = reports.slice(1);
+  const prev = reports.slice(1, 10);
+
+  const calendarVisits: CalendarVisit[] = reports.map(r => ({
+    id: r.id,
+    visit_date: r.visit_date,
+    mood: r.mood as 'good' | 'fair' | 'concern',
+    status: r.status as 'pending' | 'approved' | 'rejected',
+    summary: r.summary,
+    manager_name: (r.manager as any)?.name ?? null,
+  }));
+
+  const stickerVisits: VisitStickerItem[] = reports.map(r => ({
+    id: r.id,
+    visit_date: r.visit_date,
+    mood: r.mood as 'good' | 'fair' | 'concern',
+    status: r.status as 'pending' | 'approved' | 'rejected',
+  }));
 
   return (
     <div className="max-w-5xl mx-auto px-6 md:px-10 py-10">
@@ -86,7 +105,7 @@ export default async function DashboardPage() {
       ) : (
         <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-          {/* ── Left: Reports ── */}
+          {/* ── Left: Reports + Calendar ── */}
           <div className="flex-1 min-w-0">
 
             {latest ? (
@@ -164,7 +183,7 @@ export default async function DashboardPage() {
 
             {/* Previous reports */}
             {prev.length > 0 && (
-              <div>
+              <div className="mb-6">
                 <p className="text-[11px] tracking-[0.15em] uppercase text-mute mb-3">이전 방문 기록</p>
                 <div className="flex flex-col gap-2">
                   {prev.map(r => {
@@ -190,10 +209,24 @@ export default async function DashboardPage() {
                 </div>
               </div>
             )}
+
+            {/* Calendar */}
+            {calendarVisits.length > 0 && (
+              <div className="bg-paper p-6" style={border}>
+                <VisitCalendar visits={calendarVisits} showManagerName />
+              </div>
+            )}
           </div>
 
           {/* ── Right Sidebar ── */}
           <div className="lg:w-60 flex flex-col gap-4 shrink-0 w-full">
+
+            {/* Stickers */}
+            {stickerVisits.length > 0 && (
+              <div className="bg-paper p-5" style={border}>
+                <VisitStickers visits={stickerVisits} />
+              </div>
+            )}
 
             {/* Subscription */}
             <div className="bg-paper p-5" style={border}>
