@@ -3,11 +3,18 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { CalendarDays, User, CreditCard, Clock } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
 import { PLAN_LABELS, STATUS_LABELS } from '@/types';
+import { BeneficiaryMap } from '@/components/BeneficiaryMap';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
   fair: { bg: 'bg-[#FFF8E1]', text: 'text-[#8A6914]', label: '보통' },
   concern: { bg: 'bg-[#FDE8E8]', text: 'text-[#842029]', label: '관심필요' },
+} as const;
+
+const REPORT_STATUS = {
+  pending:  { bg: 'bg-amber-50',  text: 'text-amber-700',  label: '승인 대기중' },
+  approved: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]',  label: '승인됨' },
+  rejected: { bg: 'bg-[#FDE8E8]', text: 'text-[#842029]',  label: '반려됨' },
 } as const;
 
 function korDate(d: string) {
@@ -93,9 +100,20 @@ export default async function DashboardPage() {
                     <p className="font-en text-[10px] tracking-[0.2em] uppercase text-mute mb-1.5">
                       Latest Visit Report
                     </p>
-                    <p className="font-serif-ko text-[15px] text-ink">{korDate(latest.visit_date)}</p>
+                    <p className="font-serif-ko text-[15px] text-ink">
+                      {korDate(latest.visit_date)}
+                      {latest.visit_time && (
+                        <span className="text-mute text-[13px] ml-2">
+                          {latest.visit_time.slice(0,5)}
+                        </span>
+                      )}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+                    {(() => {
+                      const s = REPORT_STATUS[latest.status as keyof typeof REPORT_STATUS] ?? REPORT_STATUS.pending;
+                      return <span className={`${s.bg} ${s.text} text-[11px] px-2.5 py-0.5`}>{s.label}</span>;
+                    })()}
                     <span className="text-[12.5px] text-mute">{latest.manager?.name ?? ''} 매니저</span>
                     {(() => {
                       const m = MOOD[latest.mood as keyof typeof MOOD] ?? MOOD.good;
@@ -245,6 +263,15 @@ export default async function DashboardPage() {
                   <p className="text-[13px] text-mute">{sub.manager.phone}</p>
                 )}
               </div>
+            )}
+
+            {/* Map */}
+            {sub.beneficiary && (
+              <BeneficiaryMap
+                name={sub.beneficiary.name}
+                address={(sub.beneficiary as any).address ?? null}
+                addressDetail={(sub.beneficiary as any).address_detail ?? null}
+              />
             )}
           </div>
         </div>

@@ -13,6 +13,8 @@ export interface Profile {
   name: string | null;
   role: UserRole;
   phone: string | null;
+  address: string | null;
+  address_detail: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -32,12 +34,27 @@ export interface VisitReport {
   manager_id: string | null;
   beneficiary_id: string;
   visit_date: string;
+  visit_time: string | null;
   summary: string;
   mood: 'good' | 'fair' | 'concern';
   photos: string[];
+  status: 'pending' | 'approved' | 'rejected';
+  approved_at: string | null;
+  approved_by: string | null;
+  rejection_reason: string | null;
   created_at: string;
-  manager?: { id: string; name: string | null } | null;
-  beneficiary?: { id: string; name: string | null } | null;
+  manager?: { id: string; name: string | null; phone?: string | null } | null;
+  beneficiary?: { id: string; name: string | null; phone?: string | null; address?: string | null } | null;
+}
+
+export interface Payment {
+  id: string;
+  subscription_id: string;
+  visit_report_id: string | null;
+  amount: number;
+  status: 'pending' | 'paid' | 'failed';
+  paid_at: string | null;
+  created_at: string;
 }
 
 export interface Subscription {
