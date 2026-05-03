@@ -15,7 +15,7 @@ export default async function ReportViewPage({ params }: { params: { id: string 
     .select(`
       *,
       manager:manager_id(id, name, phone, avatar_url),
-      beneficiary:beneficiary_id(id, name, phone, address, address_detail, avatar_url, gender)
+      beneficiary:beneficiary_id(id, name, phone, address, address_detail, avatar_url)
     `)
     .eq('id', params.id)
     .single();
