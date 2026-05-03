@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { CalendarDays, User, Heart } from 'lucide-react';
 import type { Subscription, VisitReport, Profile } from '@/types';
+import { Avatar } from '@/components/Avatar';
+import { AvatarUploadWrapper } from '@/components/AvatarUploadWrapper';
 
 const MOOD = {
   good: { bg: 'bg-[#E8F4EC]', text: 'text-[#2D6A4F]', label: '좋음' },
@@ -20,6 +22,8 @@ const border = { border: '0.5px solid rgba(42,40,35,0.18)' };
 export default async function MypagePage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const { data: myProfile } = await supabase
+    .from('profiles').select('name, avatar_url').eq('id', user!.id).single();
 
   const admin = createAdminClient();
 
@@ -50,11 +54,18 @@ export default async function MypagePage() {
     <div className="max-w-2xl mx-auto px-6 md:px-10 py-14">
       {/* Title */}
       <div className="mb-10 text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 mb-5" style={{ ...border, borderRadius: '50%' }}>
-          <Heart size={20} strokeWidth={1.2} className="text-primary" />
+        <div className="flex justify-center mb-5">
+          <AvatarUploadWrapper
+            userId={user!.id}
+            currentUrl={myProfile?.avatar_url ?? null}
+            name={myProfile?.name ?? null}
+            size={80}
+          />
         </div>
         <p className="font-en text-[11px] tracking-[0.2em] uppercase text-mute mb-2">My Page</p>
-        <h1 className="font-serif-ko font-black text-ink text-[28px]">안녕하세요</h1>
+        <h1 className="font-serif-ko font-black text-ink text-[28px]">
+          {myProfile?.name ? `${myProfile.name} 어르신` : '안녕하세요'}
+        </h1>
         <p className="text-[14px] text-mute mt-2">곁에 서비스를 이용해 주셔서 감사합니다.</p>
       </div>
 

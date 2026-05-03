@@ -15,8 +15,26 @@ export interface Profile {
   phone: string | null;
   address: string | null;
   address_detail: string | null;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface MemberRequest {
+  id: string;
+  manager_id: string;
+  name: string;
+  phone: string | null;
+  address: string | null;
+  address_detail: string | null;
+  notes: string | null;
+  avatar_url: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+  rejection_reason: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_profile_id: string | null;
+  created_at: string;
 }
 
 export interface HeroImage {

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { Wordmark } from '@/components/Wordmark';
 import { LogoutButton } from '@/components/LogoutButton';
+import { Avatar } from '@/components/Avatar';
 import type { Profile } from '@/types';
 
 export default async function ManagerLayout({ children }: { children: React.ReactNode }) {
@@ -31,16 +32,18 @@ export default async function ManagerLayout({ children }: { children: React.Reac
             <Wordmark size={24} />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/manager" className="text-[13px] text-ink/70 hover:text-ink transition-colors">
-              대시보드
-            </Link>
-            <Link href="/manager/report/new" className="text-[13px] text-ink/70 hover:text-ink transition-colors">
-              보고서 작성
-            </Link>
+            <Link href="/manager" className="text-[13px] text-ink/70 hover:text-ink transition-colors">대시보드</Link>
+            <Link href="/manager/members" className="text-[13px] text-ink/70 hover:text-ink transition-colors">어르신 등록</Link>
+            <Link href="/manager/report/new" className="text-[13px] text-ink/70 hover:text-ink transition-colors">보고서 작성</Link>
           </nav>
         </div>
-        <div className="flex items-center gap-5">
-          <span className="text-[13px] text-ink/70">{p.name ?? p.email} 매니저</span>
+        <div className="flex items-center gap-3">
+          <Link href="/manager/settings" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Avatar src={(p as any).avatar_url} name={p.name} size={32} />
+            {!((p as any).avatar_url) && (
+              <span className="text-[11px] text-amber-600 hidden md:inline">사진 등록 필요</span>
+            )}
+          </Link>
           <LogoutButton />
         </div>
       </header>
