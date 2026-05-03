@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, ImageIcon, LogOut, ClipboardCheck, CalendarDays, UserPlus } from 'lucide-react';
+import { LayoutDashboard, Users, ImageIcon, LogOut, ClipboardCheck, CalendarDays, UserPlus, Settings } from 'lucide-react';
 import { Wordmark } from '@/components/Wordmark';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/types';
@@ -38,6 +38,10 @@ const NAV = [
   {
     label: '콘텐츠',
     items: [{ href: '/admin/images', label: '히어로 이미지', icon: ImageIcon, exact: false }],
+  },
+  {
+    label: '설정',
+    items: [{ href: '/admin/settings', label: '관리자 설정', icon: Settings, exact: false }],
   },
 ];
 

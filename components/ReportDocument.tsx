@@ -29,6 +29,7 @@ interface ReportData {
 interface ReportDocumentProps {
   report: ReportData;
   approverName?: string | null;
+  approverStampUrl?: string | null;
   backHref?: string;
 }
 
@@ -55,7 +56,7 @@ function reportNo(id: string) {
 
 const line = { borderTop: '0.5px solid rgba(42,40,35,0.18)' };
 
-export function ReportDocument({ report, approverName, backHref = '/manager' }: ReportDocumentProps) {
+export function ReportDocument({ report, approverName, approverStampUrl, backHref = '/manager' }: ReportDocumentProps) {
   const isApproved = report.status === 'approved';
   const stampDate = report.approved_at
     ? report.approved_at.slice(0, 10)
@@ -363,7 +364,16 @@ export function ReportDocument({ report, approverName, backHref = '/manager' }: 
             <div style={{ textAlign: 'center' }}>
               {isApproved ? (
                 <div>
-                  <ApprovalStamp date={stampDate} size={110} />
+                  {approverStampUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={approverStampUrl}
+                      alt="승인 도장"
+                      style={{ width: 110, height: 110, objectFit: 'contain', display: 'block' }}
+                    />
+                  ) : (
+                    <ApprovalStamp date={stampDate} size={110} />
+                  )}
                   {approverName && (
                     <p style={{ fontSize: 11, color: '#B91C1C', marginTop: 4 }}>
                       승인자 · {approverName}

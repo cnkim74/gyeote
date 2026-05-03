@@ -23,13 +23,15 @@ export default async function AdminReportViewPage({ params }: { params: { id: st
   if (!report) redirect('/admin/reports');
 
   let approverName: string | null = null;
+  let approverStampUrl: string | null = null;
   if (report.approved_by) {
     const { data: approver } = await admin
       .from('profiles')
-      .select('name')
+      .select('name, stamp_url')
       .eq('id', report.approved_by)
       .single();
     approverName = approver?.name ?? null;
+    approverStampUrl = (approver as any)?.stamp_url ?? null;
   }
 
   return (
@@ -37,6 +39,7 @@ export default async function AdminReportViewPage({ params }: { params: { id: st
       <ReportDocument
         report={report as any}
         approverName={approverName}
+        approverStampUrl={approverStampUrl}
         backHref="/admin/reports"
       />
     </div>
