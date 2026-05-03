@@ -219,6 +219,20 @@ export default function ReportsPage() {
                   </div>
                 )}
 
+                {/* View button (approved / rejected) */}
+                {r.status !== 'pending' && (
+                  <div className="px-6 py-3" style={{ borderTop: '0.5px solid rgba(42,40,35,0.12)' }}>
+                    <Link
+                      href={`/admin/report/${r.id}`}
+                      className="flex items-center justify-center gap-1.5 w-full py-2.5 text-[13px] text-mute bg-paper hover:text-ink transition-colors"
+                      style={border}
+                    >
+                      <FileText size={14} strokeWidth={1.4} />
+                      보고서 보기
+                    </Link>
+                  </div>
+                )}
+
                 {/* Action buttons (pending only) */}
                 {r.status === 'pending' && (
                   <div className="px-6 py-4">
