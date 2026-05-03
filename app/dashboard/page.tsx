@@ -211,11 +211,9 @@ export default async function DashboardPage() {
             )}
 
             {/* Calendar */}
-            {calendarVisits.length > 0 && (
-              <div className="bg-paper p-6" style={border}>
-                <VisitCalendar visits={calendarVisits} showManagerName />
-              </div>
-            )}
+            <div className="bg-paper p-6" style={border}>
+              <VisitCalendar visits={calendarVisits} showManagerName />
+            </div>
           </div>
 
           {/* ── Right Sidebar ── */}

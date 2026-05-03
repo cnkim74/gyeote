@@ -196,11 +196,9 @@ export default async function ManagerPage() {
           </div>
 
           {/* My visit calendar */}
-          {calendarVisits.length > 0 && (
-            <div className="bg-paper p-4" style={border}>
-              <VisitCalendar visits={calendarVisits} showBeneficiaryName />
-            </div>
-          )}
+          <div className="bg-paper p-4" style={border}>
+            <VisitCalendar visits={calendarVisits} showBeneficiaryName />
+          </div>
         </div>
       </div>
     </div>
