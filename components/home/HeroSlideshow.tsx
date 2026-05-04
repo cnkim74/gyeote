@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { G } from '../G';
 
 interface SlideImage {
   id: string;
@@ -49,7 +50,7 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
             <h1 className="font-serif-ko font-black text-ink leading-[1.08] tracking-[-0.025em] text-[40px] md:text-[70px] lg:text-[86px] mb-6 md:mb-10">
               자녀를 대신해,
               <br />
-              부모님 <span className="text-primary">곁에</span>.
+              부모님 <G />.
             </h1>
 
             <p
@@ -140,7 +141,7 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
         style={{ borderTop: '0.5px solid rgba(42,40,35,0.18)' }}
       >
         <span className="font-en italic text-mute hidden md:inline">— 운영 슬로건</span>
-        <span className="font-serif-ko text-ink whitespace-nowrap">오늘도 곁에 다녀왔습니다.</span>
+        <span className="font-serif-ko text-ink whitespace-nowrap">오늘도 <G /> 다녀왔습니다.</span>
         <span className="font-en italic text-mute hidden md:inline">Plate i.</span>
         <span className="text-mute text-[11px] truncate">{slide.caption}</span>
       </div>

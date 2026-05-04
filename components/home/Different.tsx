@@ -1,4 +1,5 @@
 import { Reveal } from '../Reveal';
+import { G } from '../G';
 
 const points = [
   {
@@ -33,9 +34,7 @@ export function Different() {
             <h2 className="font-serif-ko font-bold text-ink text-[28px] md:text-[40px] leading-[1.34] tracking-[-0.015em] max-w-[720px]">
               방문 동행 서비스가 처음은 아닙니다.
               <br />
-              <span className="text-primary">
-                곁에는 세 가지가 다릅니다.
-              </span>
+              <G />는 세 가지가 다릅니다.
             </h2>
           </Reveal>
 

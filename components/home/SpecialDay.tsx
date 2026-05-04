@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowRight, Gift, Sparkles, ShoppingCart, Camera, Flower2, Cake } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import Link from 'next/link';
+import { G } from '../G';
 
 const OPTIONS = [
   {
@@ -72,7 +73,7 @@ export function SpecialDay() {
             <Reveal>
               <h2 className="font-serif-ko font-bold text-ink text-[28px] md:text-[40px] leading-[1.34] tracking-[-0.015em]">
                 특별한 날,<br />
-                특별하게 신청하는 곁에.
+                특별하게 신청하는 <G />.
               </h2>
             </Reveal>
             <Reveal delay={100}>

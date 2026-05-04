@@ -1,4 +1,5 @@
 import { Wordmark } from './Wordmark';
+import { G } from './G';
 
 export function Footer() {
   return (
@@ -7,9 +8,9 @@ export function Footer() {
         <div className="md:col-span-5">
           <Wordmark size={28} color="#F5EFE3" />
           <p className="mt-6 font-serif-ko text-[15px] leading-[1.85] text-surface/75 max-w-[360px]">
-            자녀를 대신해, 부모님 곁에.
+            자녀를 대신해, 부모님 <G />.
             <br />
-            오늘도 곁에 다녀왔습니다.
+            오늘도 <G /> 다녀왔습니다.
           </p>
         </div>
         <div className="md:col-span-3">

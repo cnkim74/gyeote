@@ -1,5 +1,6 @@
 import { ArrowRight, Phone } from 'lucide-react';
 import { Reveal } from '../Reveal';
+import { G } from '../G';
 
 export function CTA() {
   return (
@@ -15,7 +16,7 @@ export function CTA() {
           </div>
           <Reveal>
             <h2 className="mt-10 font-serif-ko font-bold text-[36px] md:text-[64px] lg:text-[76px] leading-[1.18] tracking-[-0.02em]">
-              오늘도 곁에
+              오늘도 <G />
               <br />
               다녀왔습니다.
             </h2>
