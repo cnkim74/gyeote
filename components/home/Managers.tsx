@@ -5,55 +5,96 @@ import Link from 'next/link';
 const cards = [
   {
     tag: '매니저 ㅈ',
-    initial: 'ㅈ',
-    color: '#2C7A72',
     role: '요양보호사 1급 · 12년차',
     cert: '요양보호사 1급',
     line: '"처음엔 어색하셔도, 세 번째 방문이면 시장 가는 길을 같이 걷게 됩니다."',
     area: '안동 · 예천',
+    type: 'care' as const,
+    color: '#2C7A72',
   },
   {
     tag: '매니저 ㅇ',
-    initial: 'ㅇ',
-    color: '#5C7CA8',
     role: '간호조무사 · 사회복지사 2급',
     cert: '간호조무사',
     line: '"병원에서 들으신 말씀, 자녀분께도 같은 결로 전달드리려 노력합니다."',
     area: '영주 · 봉화',
+    type: 'medical' as const,
+    color: '#5C7CA8',
   },
   {
     tag: '매니저 ㄱ',
-    initial: 'ㄱ',
-    color: '#4A7A58',
     role: '사회복지사 1급 · 9년차',
     cert: '사회복지사 1급',
     line: '"행정 서류는 어머님 손을 빌려, 함께 끝내고 옵니다. 대신해드리지 않습니다."',
     area: '의성 · 청송',
+    type: 'social' as const,
+    color: '#4A7A58',
   },
 ];
 
-function ManagerAvatar({ initial, color }: { initial: string; color: string }) {
+/* ── 역할 아이콘: 선 일러스트 ── */
+
+function CareIcon({ color }: { color: string }) {
   return (
-    <div
-      className="w-[108px] h-[108px] rounded-full flex items-center justify-center"
-      style={{ border: `2px solid ${color}28` }}
-    >
-      <div
-        className="w-[92px] h-[92px] rounded-full flex items-center justify-center"
-        style={{
-          background: color,
-          boxShadow: `0 8px 28px ${color}50, 0 2px 8px ${color}30`,
-        }}
-      >
-        <span
-          className="text-[40px] font-bold text-white leading-none select-none"
-          style={{ textShadow: '0 1px 4px rgba(0,0,0,0.18)' }}
-        >
-          {initial}
-        </span>
-      </div>
-    </div>
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+      {/* Heart */}
+      <path
+        d="M28 46 C28 46 6 32 6 18 C6 11 12 6 19 6 C23 6 27 9 28 13 C29 9 33 6 37 6 C44 6 50 11 50 18 C50 32 28 46 28 46Z"
+        stroke={color} strokeWidth="2.2" strokeLinejoin="round" fill={`${color}14`}
+      />
+      {/* Person inside heart */}
+      <circle cx="28" cy="19" r="4.5" stroke={color} strokeWidth="1.8" fill={`${color}20`} />
+      <path
+        d="M21 32 Q24 27 28 27 Q32 27 35 32"
+        stroke={color} strokeWidth="1.8" strokeLinecap="round" fill="none"
+      />
+    </svg>
   );
+}
+
+function MedicalIcon({ color }: { color: string }) {
+  return (
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+      {/* Ear tips */}
+      <circle cx="17" cy="9" r="3" stroke={color} strokeWidth="2" fill={`${color}14`} />
+      <circle cx="39" cy="9" r="3" stroke={color} strokeWidth="2" fill={`${color}14`} />
+      {/* Tubes */}
+      <path
+        d="M17 12 L17 22 Q17 29 28 29 Q39 29 39 22 L39 12"
+        stroke={color} strokeWidth="2.2" fill="none" strokeLinecap="round"
+      />
+      {/* Stem */}
+      <path d="M28 29 L28 39" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+      {/* Chest piece */}
+      <circle cx="28" cy="46" r="7" stroke={color} strokeWidth="2.2" fill={`${color}14`} />
+      <circle cx="28" cy="46" r="3" fill={color} opacity="0.35" />
+    </svg>
+  );
+}
+
+function SocialIcon({ color }: { color: string }) {
+  return (
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+      {/* Clipboard body */}
+      <rect x="9" y="13" width="38" height="40" rx="4" stroke={color} strokeWidth="2.2" fill={`${color}08`} />
+      {/* Clip */}
+      <rect x="19" y="8" width="18" height="11" rx="5" stroke={color} strokeWidth="2" fill={`${color}14`} />
+      {/* Text lines */}
+      <line x1="17" y1="28" x2="39" y2="28" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="17" y1="36" x2="35" y2="36" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      {/* Checkmark on last line */}
+      <polyline
+        points="17,44 21,48 30,40"
+        stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"
+      />
+    </svg>
+  );
+}
+
+function RoleIcon({ type, color }: { type: 'care' | 'medical' | 'social'; color: string }) {
+  if (type === 'care') return <CareIcon color={color} />;
+  if (type === 'medical') return <MedicalIcon color={color} />;
+  return <SocialIcon color={color} />;
 }
 
 export function Managers() {
@@ -98,7 +139,12 @@ export function Managers() {
                     style={{ borderRight: i < 2 ? '0.5px solid rgba(42,40,35,0.18)' : 'none' }}
                   >
                     <div className="w-full mb-6 flex items-center justify-center py-3">
-                      <ManagerAvatar initial={c.initial} color={c.color} />
+                      <div
+                        className="w-[88px] h-[88px] rounded-full flex items-center justify-center"
+                        style={{ background: `${c.color}12` }}
+                      >
+                        <RoleIcon type={c.type} color={c.color} />
+                      </div>
                     </div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <BadgeCheck size={12} strokeWidth={1.5} className="text-primary shrink-0" />
@@ -166,8 +212,8 @@ export function Managers() {
                       '또는 간호조무사 / 사회복지사',
                       '경북 북부권 거주자 우대',
                       '따뜻한 마음을 가진 분 누구나',
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-start gap-2.5">
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5">
                         <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                         <p className="text-[14px] text-surface/80 leading-[1.7]">{item}</p>
                       </div>
