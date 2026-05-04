@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Gift, Sparkles, ShoppingCart, Camera, Flower2, Cake, CheckCircle } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import Link from 'next/link';
 import { G } from '../G';
+import { createClient } from '@/lib/supabase/client';
 
 const OPTIONS = [
   {
@@ -52,6 +53,25 @@ export function SpecialDay() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', visitDate: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('name, phone')
+        .eq('id', user.id)
+        .single();
+      if (data) {
+        setForm(f => ({
+          ...f,
+          name: data.name ?? f.name,
+          phone: data.phone ?? f.phone,
+        }));
+      }
+    });
+  }, []);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
