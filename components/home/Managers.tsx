@@ -1,6 +1,7 @@
 import { MapPin, ArrowRight, BadgeCheck, Heart } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const cards = [
   {
@@ -9,7 +10,7 @@ const cards = [
     cert: '요양보호사 1급',
     line: '"처음엔 어색하셔도, 세 번째 방문이면 시장 가는 길을 같이 걷게 됩니다."',
     area: '안동 · 예천',
-    roleIcon: 'care',
+    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
   },
   {
     tag: '매니저 ㅇ',
@@ -17,7 +18,7 @@ const cards = [
     cert: '간호조무사',
     line: '"병원에서 들으신 말씀, 자녀분께도 같은 결로 전달드리려 노력합니다."',
     area: '영주 · 봉화',
-    roleIcon: 'medical',
+    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
   },
   {
     tag: '매니저 ㄱ',
@@ -25,130 +26,10 @@ const cards = [
     cert: '사회복지사 1급',
     line: '"행정 서류는 어머님 손을 빌려, 함께 끝내고 옵니다. 대신해드리지 않습니다."',
     area: '의성 · 청송',
-    roleIcon: 'social',
+    photo: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
   },
 ];
 
-function RoleIcon({ type }: { type: string }) {
-  if (type === 'care') {
-    // Care worker — person with heart, helping gesture
-    return (
-      <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {/* Body */}
-        <ellipse cx="60" cy="52" rx="20" ry="22" fill="#2C5F5D" opacity="0.12" />
-        {/* Head */}
-        <circle cx="60" cy="30" r="16" fill="#2C5F5D" opacity="0.18" />
-        <circle cx="60" cy="30" r="13" fill="#E8D5C0" />
-        {/* Hair */}
-        <ellipse cx="60" cy="19" rx="13" ry="7" fill="#5A3E28" />
-        {/* Face */}
-        <circle cx="55" cy="30" r="1.5" fill="#5A3E28" />
-        <circle cx="65" cy="30" r="1.5" fill="#5A3E28" />
-        <path d="M56 35 Q60 38 64 35" stroke="#5A3E28" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-        {/* Uniform / torso */}
-        <path d="M38 70 Q40 55 60 52 Q80 55 82 70 L82 100 Q82 104 78 104 L42 104 Q38 104 38 100 Z" fill="#2C5F5D" opacity="0.85" />
-        {/* Arms */}
-        <path d="M38 70 Q28 80 30 95" stroke="#2C5F5D" strokeWidth="10" strokeLinecap="round" opacity="0.8" fill="none" />
-        <path d="M82 70 Q92 80 90 95" stroke="#2C5F5D" strokeWidth="10" strokeLinecap="round" opacity="0.8" fill="none" />
-        {/* Hands */}
-        <circle cx="30" cy="96" r="7" fill="#E8D5C0" />
-        <circle cx="90" cy="96" r="7" fill="#E8D5C0" />
-        {/* Heart in hands */}
-        <path d="M24 94 Q27 89 30 92 Q33 89 36 94 Q33 98 30 101 Q27 98 24 94Z" fill="#C97B5D" opacity="0.9" />
-        {/* Legs */}
-        <rect x="46" y="104" width="12" height="30" rx="4" fill="#3D4A3E" />
-        <rect x="62" y="104" width="12" height="30" rx="4" fill="#3D4A3E" />
-        {/* Shoes */}
-        <ellipse cx="52" cy="134" rx="9" ry="5" fill="#2A2823" />
-        <ellipse cx="68" cy="134" rx="9" ry="5" fill="#2A2823" />
-        {/* Badge */}
-        <rect x="50" y="68" width="20" height="14" rx="3" fill="white" opacity="0.9" />
-        <rect x="52" y="70" width="16" height="2" rx="1" fill="#2C5F5D" opacity="0.6" />
-        <rect x="52" y="74" width="10" height="1.5" rx="0.75" fill="#2C5F5D" opacity="0.4" />
-        <rect x="52" y="77" width="12" height="1.5" rx="0.75" fill="#2C5F5D" opacity="0.4" />
-      </svg>
-    );
-  }
-  if (type === 'medical') {
-    // Nursing assistant — person with medical cross
-    return (
-      <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {/* Head */}
-        <circle cx="60" cy="30" r="13" fill="#E8D5C0" />
-        {/* Hair */}
-        <ellipse cx="60" cy="19.5" rx="13" ry="6.5" fill="#2A2823" />
-        {/* Bun */}
-        <circle cx="60" cy="16" r="5" fill="#2A2823" />
-        {/* Nurse cap */}
-        <rect x="46" y="14" width="28" height="8" rx="2" fill="white" opacity="0.95" />
-        <rect x="56" y="11" width="8" height="14" rx="1" fill="white" opacity="0.95" />
-        <path d="M57 14 h6 M60 11 v6" stroke="#C97B5D" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Face */}
-        <circle cx="55" cy="30" r="1.5" fill="#5A3E28" />
-        <circle cx="65" cy="30" r="1.5" fill="#5A3E28" />
-        <path d="M56 35 Q60 38 64 35" stroke="#5A3E28" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-        {/* Uniform */}
-        <path d="M38 70 Q40 55 60 52 Q80 55 82 70 L82 100 Q82 104 78 104 L42 104 Q38 104 38 100 Z" fill="white" stroke="#2C5F5D" strokeWidth="1" opacity="0.9" />
-        {/* Cross on uniform */}
-        <rect x="55" y="70" width="10" height="3" rx="1" fill="#C97B5D" opacity="0.9" />
-        <rect x="58" y="67" width="4" height="9" rx="1" fill="#C97B5D" opacity="0.9" />
-        {/* Arms */}
-        <path d="M38 70 Q28 80 30 95" stroke="#2C5F5D" strokeWidth="10" strokeLinecap="round" opacity="0.4" fill="none" />
-        <path d="M82 70 Q92 80 90 95" stroke="#2C5F5D" strokeWidth="10" strokeLinecap="round" opacity="0.4" fill="none" />
-        {/* Hands */}
-        <circle cx="30" cy="96" r="7" fill="#E8D5C0" />
-        <circle cx="90" cy="96" r="7" fill="#E8D5C0" />
-        {/* Clipboard */}
-        <rect x="84" y="78" width="16" height="22" rx="2" fill="white" stroke="#2C5F5D" strokeWidth="1" opacity="0.9" />
-        <rect x="88" y="74" width="8" height="5" rx="1" fill="#2C5F5D" opacity="0.6" />
-        <rect x="86" y="84" width="12" height="1.5" rx="0.75" fill="#9B9488" />
-        <rect x="86" y="88" width="10" height="1.5" rx="0.75" fill="#9B9488" />
-        <rect x="86" y="92" width="8" height="1.5" rx="0.75" fill="#9B9488" />
-        {/* Legs */}
-        <rect x="46" y="104" width="12" height="30" rx="4" fill="#3D4A3E" />
-        <rect x="62" y="104" width="12" height="30" rx="4" fill="#3D4A3E" />
-        <ellipse cx="52" cy="134" rx="9" ry="5" fill="#2A2823" />
-        <ellipse cx="68" cy="134" rx="9" ry="5" fill="#2A2823" />
-      </svg>
-    );
-  }
-  // social worker — person with document/forms, helping posture
-  return (
-    <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      {/* Head */}
-      <circle cx="60" cy="30" r="13" fill="#E8D5C0" />
-      {/* Hair */}
-      <ellipse cx="60" cy="19" rx="13" ry="7" fill="#6B4423" />
-      {/* Face */}
-      <circle cx="55" cy="30" r="1.5" fill="#5A3E28" />
-      <circle cx="65" cy="30" r="1.5" fill="#5A3E28" />
-      <path d="M56 35 Q60 38 64 35" stroke="#5A3E28" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-      {/* Suit / formal wear */}
-      <path d="M38 70 Q40 55 60 52 Q80 55 82 70 L82 100 Q82 104 78 104 L42 104 Q38 104 38 100 Z" fill="#3D4A3E" opacity="0.9" />
-      {/* Collar / shirt */}
-      <path d="M55 52 L60 62 L65 52" fill="white" opacity="0.9" />
-      {/* Arms */}
-      <path d="M38 70 Q26 80 25 96" stroke="#3D4A3E" strokeWidth="11" strokeLinecap="round" opacity="0.85" fill="none" />
-      <path d="M82 70 Q94 78 96 90" stroke="#3D4A3E" strokeWidth="11" strokeLinecap="round" opacity="0.85" fill="none" />
-      {/* Hands */}
-      <circle cx="25" cy="97" r="7" fill="#E8D5C0" />
-      <circle cx="96" cy="90" r="7" fill="#E8D5C0" />
-      {/* Document / form in hands */}
-      <rect x="14" y="92" width="18" height="24" rx="2" fill="white" stroke="#9B9488" strokeWidth="0.8" opacity="0.95" />
-      <rect x="17" y="97" width="12" height="1.5" rx="0.75" fill="#9B9488" />
-      <rect x="17" y="101" width="10" height="1.5" rx="0.75" fill="#9B9488" />
-      <rect x="17" y="105" width="12" height="1.5" rx="0.75" fill="#9B9488" />
-      <rect x="17" y="109" width="8" height="1.5" rx="0.75" fill="#9B9488" />
-      {/* Pen */}
-      <rect x="33" y="88" width="2" height="14" rx="1" fill="#2C5F5D" transform="rotate(-20 33 88)" />
-      {/* Legs */}
-      <rect x="46" y="104" width="12" height="30" rx="4" fill="#2A2823" />
-      <rect x="62" y="104" width="12" height="30" rx="4" fill="#2A2823" />
-      <ellipse cx="52" cy="134" rx="9" ry="5" fill="#1a1816" />
-      <ellipse cx="68" cy="134" rx="9" ry="5" fill="#1a1816" />
-    </svg>
-  );
-}
 
 export function Managers() {
   return (
@@ -202,9 +83,15 @@ export function Managers() {
                       borderRight: i < 2 ? '0.5px solid rgba(42,40,35,0.18)' : 'none',
                     }}
                   >
-                    {/* Role illustration */}
-                    <div className="w-full mb-6 flex items-end justify-center bg-surface hairline" style={{ height: 180, padding: '12px 16px 0' }}>
-                      <RoleIcon type={c.roleIcon} />
+                    {/* Photo */}
+                    <div className="w-full mb-6 relative overflow-hidden hairline" style={{ height: 220 }}>
+                      <Image
+                        src={c.photo}
+                        alt={c.tag}
+                        fill
+                        className="object-cover object-top"
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                      />
                     </div>
 
                     {/* Cert badge */}
