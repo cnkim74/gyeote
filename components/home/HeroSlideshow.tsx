@@ -68,7 +68,7 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
             <h1 className="font-serif-ko font-black text-ink leading-[1.5] tracking-[-0.025em] text-[40px] md:text-[70px] lg:text-[86px] mb-6 md:mb-10">
               자녀를 대신해,
               <br />
-              부모님 <G />.
+              부모님 <G />
             </h1>
 
             <p
