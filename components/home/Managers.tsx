@@ -10,7 +10,7 @@ const cards = [
     cert: '요양보호사 1급',
     line: '"처음엔 어색하셔도, 세 번째 방문이면 시장 가는 길을 같이 걷게 됩니다."',
     area: '안동 · 예천',
-    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
+    photo: 'https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
   },
   {
     tag: '매니저 ㅇ',
@@ -18,7 +18,7 @@ const cards = [
     cert: '간호조무사',
     line: '"병원에서 들으신 말씀, 자녀분께도 같은 결로 전달드리려 노력합니다."',
     area: '영주 · 봉화',
-    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
+    photo: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
   },
   {
     tag: '매니저 ㄱ',
@@ -26,7 +26,7 @@ const cards = [
     cert: '사회복지사 1급',
     line: '"행정 서류는 어머님 손을 빌려, 함께 끝내고 옵니다. 대신해드리지 않습니다."',
     area: '의성 · 청송',
-    photo: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=400&h=480&fit=crop&crop=face&auto=format&q=80',
+    photo: 'https://images.pexels.com/photos/8376236/pexels-photo-8376236.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
   },
 ];
 
