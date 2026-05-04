@@ -54,6 +54,7 @@ export default function NewReportPage() {
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [visitConfirmed, setVisitConfirmed] = useState(false);
   const [aiKeywords, setAiKeywords] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
@@ -155,8 +156,25 @@ export default function NewReportPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.beneficiary_id) { setError('어르신을 선택해 주세요.'); return; }
-    if (!form.summary.trim()) { setError('방문 일지를 작성해 주세요.'); return; }
+    if (!form.beneficiary_id)            { setError('어르신을 선택해 주세요.'); return; }
+    if (!form.visit_start_time)          { setError('방문 시작 시간을 입력해 주세요.'); return; }
+    if (!form.visit_end_time)            { setError('방문 종료 시간을 입력해 주세요.'); return; }
+    if (form.visit_end_time <= form.visit_start_time) { setError('종료 시간은 시작 시간보다 늦어야 합니다.'); return; }
+
+    // 오늘 날짜라면 종료 시간이 현재 시각 이후이면 방문 미완료로 판단
+    const today = new Date().toISOString().split('T')[0];
+    if (form.visit_date === today) {
+      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+      const [eh, em] = form.visit_end_time.split(':').map(Number);
+      if (eh * 60 + em > nowMins) { setError('종료 시간이 현재 시각보다 미래입니다. 방문이 완료된 후 제출해 주세요.'); return; }
+    }
+
+    if (photoFiles.length === 0)         { setError('방문 사진을 1장 이상 첨부해 주세요.'); return; }
+    if (form.condition_score === 0)      { setError('건강 상태 점수를 선택해 주세요.'); return; }
+    if (form.stress_score === 0)         { setError('스트레스 지수를 선택해 주세요.'); return; }
+    if (form.summary.trim().length < 50) { setError('방문 일지를 50자 이상 작성해 주세요.'); return; }
+    if (!visitConfirmed)                 { setError('방문 완료 확인 체크박스를 선택해 주세요.'); return; }
+
     setLoading(true);
     setError('');
 
@@ -352,7 +370,7 @@ export default function NewReportPage() {
             <div>
               <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2 flex items-center gap-1.5">
                 <Clock size={11} strokeWidth={1.4} />
-                시작 시간
+                시작 시간 *
               </label>
               <input
                 type="time"
@@ -360,12 +378,13 @@ export default function NewReportPage() {
                 onChange={e => setForm(f => ({ ...f, visit_start_time: e.target.value }))}
                 className="w-full bg-paper px-4 py-3 text-[14px] text-ink focus:outline-none"
                 style={border}
+                required
               />
             </div>
             <div>
               <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-2 flex items-center gap-1.5">
                 <Clock size={11} strokeWidth={1.4} />
-                종료 시간
+                종료 시간 *
               </label>
               <input
                 type="time"
@@ -373,6 +392,7 @@ export default function NewReportPage() {
                 onChange={e => setForm(f => ({ ...f, visit_end_time: e.target.value }))}
                 className="w-full bg-paper px-4 py-3 text-[14px] text-ink focus:outline-none"
                 style={border}
+                required
               />
             </div>
           </div>
@@ -474,7 +494,7 @@ export default function NewReportPage() {
 
         {/* 건강 상태 점수 */}
         <div>
-          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">건강 상태 점수</label>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">건강 상태 점수 *</label>
           <div className="bg-paper p-4" style={border}>
             <StarRating
               value={form.condition_score}
@@ -485,7 +505,7 @@ export default function NewReportPage() {
 
         {/* 스트레스 지수 */}
         <div>
-          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">스트레스 지수</label>
+          <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">스트레스 지수 *</label>
           <div className="bg-paper p-4" style={border}>
             <StarRating
               value={form.stress_score}
@@ -547,7 +567,7 @@ export default function NewReportPage() {
         {/* 사진 첨부 */}
         <div>
           <label className="block text-[11px] tracking-[0.18em] uppercase text-mute mb-3">
-            사진 첨부 (최대 {MAX_PHOTOS}장)
+            사진 첨부 * (최대 {MAX_PHOTOS}장, 1장 이상 필수)
           </label>
 
           {/* Preview grid */}
@@ -601,7 +621,30 @@ export default function NewReportPage() {
           )}
         </div>
 
-        {error && <p className="text-[13px] text-accent">{error}</p>}
+        {error && (
+          <p className="text-[13px] text-accent bg-red-50 px-4 py-3" style={{ border: '0.5px solid rgba(200,50,50,0.2)' }}>
+            {error}
+          </p>
+        )}
+
+        {/* 방문 완료 확인 */}
+        <label className={`flex items-start gap-3 p-4 cursor-pointer transition-all ${
+          visitConfirmed ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-paper'
+        }`} style={border}>
+          <input
+            type="checkbox"
+            checked={visitConfirmed}
+            onChange={e => setVisitConfirmed(e.target.checked)}
+            className="mt-0.5 shrink-0 accent-primary w-4 h-4"
+          />
+          <div>
+            <p className="text-[13.5px] text-ink font-medium">방문이 완료되었음을 확인합니다</p>
+            <p className="text-[12px] text-mute mt-0.5 leading-[1.6]">
+              실제 방문이 완료된 경우에만 보고서를 제출할 수 있습니다.
+              허위 보고서 제출 시 계약이 해지될 수 있습니다.
+            </p>
+          </div>
+        </label>
 
         {/* 안내 */}
         <div className="bg-paper p-4 text-[12.5px] text-mute leading-[1.8]" style={border}>
@@ -611,8 +654,8 @@ export default function NewReportPage() {
 
         <button
           type="submit"
-          disabled={loading}
-          className="flex items-center justify-center gap-2 bg-primary text-surface py-4 text-[14px] tracking-tight hover:bg-primary-deep transition-colors disabled:opacity-50"
+          disabled={loading || !visitConfirmed}
+          className="flex items-center justify-center gap-2 bg-primary text-surface py-4 text-[14px] tracking-tight hover:bg-primary-deep transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <Send size={14} strokeWidth={1.4} />
           {loading ? '제출 중...' : '보고서 제출 (승인 요청)'}
