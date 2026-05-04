@@ -29,230 +29,277 @@ const cards = [
   },
 ];
 
-/* ── Cute chibi-style characters ── */
+/* ── 3D clay-style characters (reference: smooth Pixar/3D avatar style) ── */
 
-function CareCharacter() {
+function CareChar() {
   return (
-    <svg viewBox="0 0 160 190" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-      {/* Background blob */}
-      <ellipse cx="80" cy="155" rx="62" ry="30" fill="#D8EEE8" />
+    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+      <defs>
+        <radialGradient id="ca_skin" cx="38%" cy="30%" r="62%">
+          <stop offset="0%" stopColor="#FFEEDD" />
+          <stop offset="45%" stopColor="#F8C89A" />
+          <stop offset="100%" stopColor="#E5A070" />
+        </radialGradient>
+        <radialGradient id="ca_hair" cx="34%" cy="20%" r="64%">
+          <stop offset="0%" stopColor="#C8904C" />
+          <stop offset="50%" stopColor="#8A5428" />
+          <stop offset="100%" stopColor="#552E0E" />
+        </radialGradient>
+        <radialGradient id="ca_body" cx="32%" cy="20%" r="68%">
+          <stop offset="0%" stopColor="#52A89E" />
+          <stop offset="100%" stopColor="#1E4E4C" />
+        </radialGradient>
+        <radialGradient id="ca_hand" cx="35%" cy="28%" r="58%">
+          <stop offset="0%" stopColor="#FFEEDD" />
+          <stop offset="100%" stopColor="#E8AA7A" />
+        </radialGradient>
+        <filter id="ca_shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#00000020" />
+        </filter>
+      </defs>
 
-      {/* Body — teal uniform */}
-      <rect x="44" y="128" width="72" height="55" rx="20" fill="#2C5F5D" />
-      {/* Collar */}
-      <path d="M68 128 L80 142 L92 128" fill="#F9E8D0" />
-      {/* White badge with heart */}
-      <rect x="66" y="140" width="28" height="20" rx="5" fill="white" opacity="0.9" />
-      <path d="M75 147 Q80 143 85 147 Q80 153 75 147Z" fill="#C97B5D" />
+      {/* Ground shadow */}
+      <ellipse cx="100" cy="232" rx="58" ry="10" fill="#00000015" />
 
-      {/* Neck */}
-      <rect x="70" y="116" width="20" height="16" rx="8" fill="#F5C898" />
+      {/* Body */}
+      <rect x="54" y="148" width="92" height="80" rx="28" fill="url(#ca_body)" filter="url(#ca_shadow)" />
+      {/* Collar V */}
+      <path d="M82 148 L100 168 L118 148" fill="#FFEEDD" opacity="0.9" />
+      {/* Badge */}
+      <rect x="82" y="162" width="30" height="22" rx="6" fill="white" opacity="0.9" />
+      <path d="M91 170 Q97 165 103 170 Q97 176 91 170Z" fill="#C97B5D" />
+      <rect x="86" y="176" width="18" height="2" rx="1" fill="#C0C0C0" opacity="0.6" />
 
       {/* Arms */}
-      <rect x="24" y="128" width="22" height="42" rx="11" fill="#2C5F5D" />
-      <rect x="114" y="128" width="22" height="42" rx="11" fill="#2C5F5D" />
+      <rect x="28" y="150" width="28" height="52" rx="14" fill="url(#ca_body)" />
+      <rect x="144" y="150" width="28" height="52" rx="14" fill="url(#ca_body)" />
       {/* Hands */}
-      <ellipse cx="35" cy="173" rx="13" ry="11" fill="#F5C898" />
-      <ellipse cx="125" cy="173" rx="13" ry="11" fill="#F5C898" />
-      {/* Heart in right hand */}
-      <path d="M119 169 Q122 165 125 168 Q128 165 131 169 Q128 173 125 176 Q122 173 119 169Z" fill="#C97B5D" />
-
-      {/* Head — big round */}
-      <circle cx="80" cy="72" r="56" fill="#F5C898" />
-      {/* Face highlight */}
-      <ellipse cx="70" cy="56" rx="22" ry="16" fill="#FFDFC0" opacity="0.5" />
-
-      {/* Hair — bob */}
-      <ellipse cx="80" cy="30" rx="52" ry="38" fill="#2A1E18" />
-      <ellipse cx="80" cy="72" rx="56" ry="30" fill="#2A1E18" />
-      {/* Hair sides */}
-      <ellipse cx="30" cy="75" rx="14" ry="28" fill="#2A1E18" />
-      <ellipse cx="130" cy="75" rx="14" ry="28" fill="#2A1E18" />
-      {/* Hair shine */}
-      <ellipse cx="62" cy="28" rx="14" ry="6" fill="#4A3830" opacity="0.7" transform="rotate(-15 62 28)" />
-
-      {/* Face (on top of hair) */}
-      <ellipse cx="80" cy="80" rx="44" ry="48" fill="#F5C898" />
-
-      {/* Eyebrows — simple arched */}
-      <path d="M57 58 Q64 53 71 57" stroke="#3A2010" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M89 57 Q96 53 103 58" stroke="#3A2010" strokeWidth="3" strokeLinecap="round" fill="none" />
-
-      {/* Eyes — simple cute */}
-      <circle cx="64" cy="72" r="11" fill="white" />
-      <circle cx="64" cy="73" r="7" fill="#1A0C04" />
-      <circle cx="60" cy="69" r="3.5" fill="white" />
-
-      <circle cx="96" cy="72" r="11" fill="white" />
-      <circle cx="96" cy="73" r="7" fill="#1A0C04" />
-      <circle cx="92" cy="69" r="3.5" fill="white" />
-
-      {/* Cheeks */}
-      <circle cx="48" cy="84" r="12" fill="#FFB0A0" opacity="0.45" />
-      <circle cx="112" cy="84" r="12" fill="#FFB0A0" opacity="0.45" />
-
-      {/* Cute smile */}
-      <path d="M66 96 Q80 108 94 96" stroke="#D07860" strokeWidth="3" fill="none" strokeLinecap="round" />
-      {/* Teeth */}
-      <path d="M68 97 Q80 106 92 97 Q89 103 80 103 Q71 103 68 97Z" fill="white" opacity="0.85" />
-
-      {/* Nose — just two dots */}
-      <circle cx="76" cy="89" r="2" fill="#D09060" opacity="0.5" />
-      <circle cx="84" cy="89" r="2" fill="#D09060" opacity="0.5" />
-    </svg>
-  );
-}
-
-function MedicalCharacter() {
-  return (
-    <svg viewBox="0 0 160 190" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-      {/* Background blob */}
-      <ellipse cx="80" cy="155" rx="62" ry="30" fill="#D8E8F8" />
-
-      {/* Body — white uniform */}
-      <rect x="44" y="128" width="72" height="55" rx="20" fill="#EEF6FF" stroke="#C8DCEF" strokeWidth="1.5" />
-      {/* Collar */}
-      <path d="M68 128 L80 142 L92 128" fill="#F9E8D0" />
-      {/* Red cross badge */}
-      <rect x="66" y="138" width="28" height="22" rx="5" fill="white" stroke="#E8E0D8" strokeWidth="1" />
-      <rect x="75" y="142" width="10" height="14" rx="3" fill="#E63946" />
-      <rect x="69" y="146" width="22" height="6" rx="3" fill="#E63946" />
-
-      {/* Stethoscope */}
-      <path d="M52 130 Q38 145 38 158 Q38 166 46 166 Q54 166 54 158" stroke="#9B9488" strokeWidth="4" fill="none" strokeLinecap="round" />
-      <circle cx="54" cy="159" r="7" fill="#B0A898" />
-      <circle cx="54" cy="159" r="4" fill="#8A8078" />
+      <ellipse cx="42" cy="207" rx="17" ry="14" fill="url(#ca_hand)" />
+      <ellipse cx="158" cy="207" rx="17" ry="14" fill="url(#ca_hand)" />
+      {/* Heart */}
+      <path d="M150 202 Q154 196 158 200 Q162 196 166 202 Q162 208 158 212 Q154 208 150 202Z" fill="#E84B6A" />
 
       {/* Neck */}
-      <rect x="70" y="116" width="20" height="16" rx="8" fill="#F5C8A0" />
-      {/* Arms */}
-      <rect x="24" y="128" width="22" height="42" rx="11" fill="#EEF6FF" stroke="#C8DCEF" strokeWidth="1.5" />
-      <rect x="114" y="128" width="22" height="42" rx="11" fill="#EEF6FF" stroke="#C8DCEF" strokeWidth="1.5" />
-      <ellipse cx="35" cy="173" rx="13" ry="11" fill="#F5C898" />
-      <ellipse cx="125" cy="173" rx="13" ry="11" fill="#F5C898" />
+      <ellipse cx="100" cy="140" rx="14" ry="12" fill="#F8C89A" />
 
-      {/* Head */}
-      <circle cx="80" cy="72" r="56" fill="#F5C898" />
-      <ellipse cx="70" cy="56" rx="22" ry="16" fill="#FFDFC0" opacity="0.5" />
-
-      {/* Hair — neat bun style */}
-      <ellipse cx="80" cy="28" rx="50" ry="36" fill="#1E1610" />
-      <ellipse cx="80" cy="72" rx="56" ry="28" fill="#1E1610" />
-      <ellipse cx="30" cy="73" rx="13" ry="26" fill="#1E1610" />
-      <ellipse cx="130" cy="73" rx="13" ry="26" fill="#1E1610" />
-      {/* Bun */}
-      <circle cx="80" cy="16" r="16" fill="#1E1610" />
-      <circle cx="80" cy="16" r="11" fill="#2A2018" />
-      <ellipse cx="75" cy="12" rx="5" ry="3" fill="#3A3028" opacity="0.7" />
-      {/* Hair shine */}
-      <ellipse cx="63" cy="30" rx="13" ry="5" fill="#3A3028" opacity="0.6" transform="rotate(-12 63 30)" />
+      {/* Hair back */}
+      <ellipse cx="100" cy="78" rx="56" ry="52" fill="url(#ca_hair)" />
+      {/* Bob sides */}
+      <ellipse cx="48" cy="96" rx="16" ry="30" fill="url(#ca_hair)" />
+      <ellipse cx="152" cy="96" rx="16" ry="30" fill="url(#ca_hair)" />
 
       {/* Face */}
-      <ellipse cx="80" cy="80" rx="44" ry="48" fill="#F5C898" />
+      <ellipse cx="100" cy="90" rx="50" ry="54" fill="url(#ca_skin)" filter="url(#ca_shadow)" />
+
+      {/* Hair front top */}
+      <ellipse cx="100" cy="48" rx="52" ry="26" fill="url(#ca_hair)" />
+      {/* Hair shine */}
+      <ellipse cx="82" cy="40" rx="18" ry="7" fill="#DDB870" opacity="0.52" transform="rotate(-18 82 40)" />
 
       {/* Eyebrows */}
-      <path d="M57 59 Q64 54 71 58" stroke="#3A2010" strokeWidth="2.8" strokeLinecap="round" fill="none" />
-      <path d="M89 58 Q96 54 103 59" stroke="#3A2010" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+      <path d="M72 70 Q80 65 87 69" stroke="#3A2010" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+      <path d="M113 69 Q120 65 128 70" stroke="#3A2010" strokeWidth="2.8" strokeLinecap="round" fill="none" />
 
-      {/* Eyes */}
-      <circle cx="64" cy="72" r="11" fill="white" />
-      <circle cx="64" cy="73" r="7" fill="#1A0C04" />
-      <circle cx="60" cy="69" r="3.5" fill="white" />
-
-      <circle cx="96" cy="72" r="11" fill="white" />
-      <circle cx="96" cy="73" r="7" fill="#1A0C04" />
-      <circle cx="92" cy="69" r="3.5" fill="white" />
+      {/* Eyes — tiny clay dots */}
+      <circle cx="81" cy="84" r="5.5" fill="#1A0C06" />
+      <circle cx="78" cy="81" r="2" fill="white" opacity="0.92" />
+      <circle cx="119" cy="84" r="5.5" fill="#1A0C06" />
+      <circle cx="116" cy="81" r="2" fill="white" opacity="0.92" />
 
       {/* Cheeks */}
-      <circle cx="48" cy="84" r="12" fill="#FFB0B8" opacity="0.4" />
-      <circle cx="112" cy="84" r="12" fill="#FFB0B8" opacity="0.4" />
+      <ellipse cx="62" cy="100" rx="16" ry="10" fill="#FFB0A0" opacity="0.38" />
+      <ellipse cx="138" cy="100" rx="16" ry="10" fill="#FFB0A0" opacity="0.38" />
 
-      {/* Gentle smile */}
-      <path d="M68 95 Q80 105 92 95" stroke="#D07860" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M70 96 Q80 104 90 96 Q88 101 80 102 Q72 101 70 96Z" fill="white" opacity="0.8" />
+      {/* Nose — subtle */}
+      <ellipse cx="100" cy="106" rx="5" ry="3.5" fill="#D89068" opacity="0.35" />
 
-      <circle cx="76" cy="88" r="2" fill="#D09060" opacity="0.5" />
-      <circle cx="84" cy="88" r="2" fill="#D09060" opacity="0.5" />
+      {/* Smile */}
+      <path d="M84 118 Q100 130 116 118" stroke="#C87060" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M86 119 Q100 128 114 119 Q111 125 100 126 Q89 125 86 119Z" fill="#FFEEDD" opacity="0.7" />
     </svg>
   );
 }
 
-function SocialCharacter() {
+function MedicalChar() {
   return (
-    <svg viewBox="0 0 160 190" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-      {/* Background blob */}
-      <ellipse cx="80" cy="155" rx="62" ry="30" fill="#DDE2F4" />
+    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+      <defs>
+        <radialGradient id="me_skin" cx="38%" cy="30%" r="62%">
+          <stop offset="0%" stopColor="#FFEDDA" />
+          <stop offset="45%" stopColor="#F8C898" />
+          <stop offset="100%" stopColor="#E5A272" />
+        </radialGradient>
+        <radialGradient id="me_hair" cx="34%" cy="20%" r="64%">
+          <stop offset="0%" stopColor="#BE8844" />
+          <stop offset="50%" stopColor="#7E4E20" />
+          <stop offset="100%" stopColor="#4E2C0A" />
+        </radialGradient>
+        <radialGradient id="me_body" cx="32%" cy="20%" r="68%">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="100%" stopColor="#C8DCEE" />
+        </radialGradient>
+        <filter id="me_shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#00000018" />
+        </filter>
+      </defs>
 
-      {/* Body — navy jacket */}
-      <rect x="44" y="128" width="72" height="55" rx="20" fill="#2D4373" />
-      {/* White shirt collar */}
-      <path d="M68 128 L80 140 L92 128 L88 122 L80 128 L72 122 Z" fill="white" opacity="0.95" />
-      {/* Green tie */}
-      <path d="M77 128 L83 128 L85 148 L80 153 L75 148 Z" fill="#2C5F5D" />
+      <ellipse cx="100" cy="232" rx="58" ry="10" fill="#00000015" />
 
-      {/* Clipboard */}
-      <rect x="8" y="145" width="26" height="34" rx="4" fill="white" stroke="#C8C0B0" strokeWidth="1.5" />
-      <rect x="14" y="140" width="14" height="8" rx="3" fill="#B0A898" />
-      <rect x="12" y="156" width="18" height="2.5" rx="1" fill="#D0C8C0" />
-      <rect x="12" y="162" width="15" height="2.5" rx="1" fill="#D0C8C0" />
-      <rect x="12" y="168" width="18" height="2.5" rx="1" fill="#D0C8C0" />
+      {/* Body white uniform */}
+      <rect x="54" y="148" width="92" height="80" rx="28" fill="url(#me_body)" stroke="#D8E8F5" strokeWidth="1.5" filter="url(#me_shadow)" />
+      <path d="M82 148 L100 166 L118 148" fill="#FFEEDD" opacity="0.85" />
+      {/* Red cross */}
+      <rect x="83" y="162" width="34" height="24" rx="6" fill="white" stroke="#E8E0DC" strokeWidth="1" />
+      <rect x="93" y="166" width="14" height="16" rx="4" fill="#E63946" />
+      <rect x="86" y="171" width="28" height="6" rx="3" fill="#E63946" />
+
+      {/* Stethoscope */}
+      <path d="M60 158 Q42 172 40 188 Q40 200 52 200 Q64 200 64 188" stroke="#9B9488" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="64" cy="189" r="9" fill="#B0A090" />
+      <circle cx="64" cy="189" r="5" fill="#8A7868" />
+      <ellipse cx="61" cy="186" rx="2.5" ry="1.5" fill="#C8B8A8" opacity="0.6" />
+
+      {/* Arms */}
+      <rect x="28" y="150" width="28" height="52" rx="14" fill="url(#me_body)" stroke="#D8E8F5" strokeWidth="1.5" />
+      <rect x="144" y="150" width="28" height="52" rx="14" fill="url(#me_body)" stroke="#D8E8F5" strokeWidth="1.5" />
+      <ellipse cx="42" cy="207" rx="17" ry="14" fill="#F8C898" />
+      <ellipse cx="158" cy="207" rx="17" ry="14" fill="#F8C898" />
 
       {/* Neck */}
-      <rect x="70" y="116" width="20" height="16" rx="8" fill="#F0B880" />
-      {/* Arms */}
-      <rect x="24" y="128" width="22" height="42" rx="11" fill="#2D4373" />
-      <rect x="114" y="128" width="22" height="42" rx="11" fill="#2D4373" />
-      <ellipse cx="35" cy="173" rx="13" ry="11" fill="#F0B880" />
-      <ellipse cx="125" cy="173" rx="13" ry="11" fill="#F0B880" />
+      <ellipse cx="100" cy="140" rx="14" ry="12" fill="#F8C898" />
 
-      {/* Head */}
-      <circle cx="80" cy="72" r="56" fill="#F0B880" />
-      <ellipse cx="70" cy="56" rx="22" ry="16" fill="#FFD8A8" opacity="0.5" />
-
-      {/* Hair — short male */}
-      <ellipse cx="80" cy="28" rx="52" ry="34" fill="#1C1410" />
-      <ellipse cx="80" cy="60" rx="56" ry="24" fill="#1C1410" />
-      <ellipse cx="30" cy="68" rx="12" ry="22" fill="#1C1410" />
-      <ellipse cx="130" cy="68" rx="12" ry="22" fill="#1C1410" />
-      {/* Short cut top */}
-      <rect x="28" y="22" width="104" height="22" rx="11" fill="#1C1410" />
-      {/* Hair shine */}
-      <ellipse cx="63" cy="28" rx="16" ry="5" fill="#3A3028" opacity="0.55" transform="rotate(-8 63 28)" />
+      {/* Hair back */}
+      <ellipse cx="100" cy="74" rx="54" ry="50" fill="url(#me_hair)" />
+      <ellipse cx="48" cy="90" rx="15" ry="28" fill="url(#me_hair)" />
+      <ellipse cx="152" cy="90" rx="15" ry="28" fill="url(#me_hair)" />
 
       {/* Face */}
-      <ellipse cx="80" cy="80" rx="44" ry="48" fill="#F0B880" />
+      <ellipse cx="100" cy="88" rx="50" ry="54" fill="url(#me_skin)" filter="url(#me_shadow)" />
 
-      {/* Eyebrows — straighter */}
-      <path d="M56 59 Q64 55 71 59" stroke="#2A1808" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-      <path d="M89 59 Q96 55 104 59" stroke="#2A1808" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+      {/* Bun */}
+      <circle cx="100" cy="30" r="20" fill="url(#me_hair)" />
+      <circle cx="100" cy="30" r="14" fill="#6A4020" />
+      <ellipse cx="93" cy="24" rx="6" ry="3.5" fill="#B07838" opacity="0.60" />
+
+      {/* Hair front */}
+      <ellipse cx="100" cy="48" rx="52" ry="22" fill="url(#me_hair)" />
+      <ellipse cx="80" cy="42" rx="16" ry="6" fill="#D4A058" opacity="0.52" transform="rotate(-12 80 42)" />
+
+      {/* Eyebrows */}
+      <path d="M72 68 Q80 63 87 67" stroke="#2A1808" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+      <path d="M113 67 Q120 63 128 68" stroke="#2A1808" strokeWidth="2.8" strokeLinecap="round" fill="none" />
 
       {/* Eyes */}
-      <circle cx="64" cy="73" r="11" fill="white" />
-      <circle cx="64" cy="74" r="7" fill="#150800" />
-      <circle cx="60" cy="70" r="3.5" fill="white" />
+      <circle cx="81" cy="82" r="5.5" fill="#1A0C06" />
+      <circle cx="78" cy="79" r="2" fill="white" opacity="0.92" />
+      <circle cx="119" cy="82" r="5.5" fill="#1A0C06" />
+      <circle cx="116" cy="79" r="2" fill="white" opacity="0.92" />
 
-      <circle cx="96" cy="73" r="11" fill="white" />
-      <circle cx="96" cy="74" r="7" fill="#150800" />
-      <circle cx="92" cy="70" r="3.5" fill="white" />
+      {/* Cheeks */}
+      <ellipse cx="62" cy="98" rx="16" ry="10" fill="#FFB8C0" opacity="0.36" />
+      <ellipse cx="138" cy="98" rx="16" ry="10" fill="#FFB8C0" opacity="0.36" />
 
-      {/* Cheeks subtle */}
-      <circle cx="48" cy="86" r="11" fill="#FFB090" opacity="0.3" />
-      <circle cx="112" cy="86" r="11" fill="#FFB090" opacity="0.3" />
+      {/* Nose */}
+      <ellipse cx="100" cy="104" rx="5" ry="3.5" fill="#D89068" opacity="0.32" />
+
+      {/* Smile */}
+      <path d="M84 116 Q100 127 116 116" stroke="#C87060" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M86 117 Q100 126 114 117 Q111 123 100 124 Q89 123 86 117Z" fill="#FFEDDA" opacity="0.7" />
+    </svg>
+  );
+}
+
+function SocialChar() {
+  return (
+    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+      <defs>
+        <radialGradient id="so_skin" cx="38%" cy="30%" r="62%">
+          <stop offset="0%" stopColor="#FFEBD6" />
+          <stop offset="45%" stopColor="#F5BC88" />
+          <stop offset="100%" stopColor="#E09A60" />
+        </radialGradient>
+        <radialGradient id="so_hair" cx="36%" cy="22%" r="62%">
+          <stop offset="0%" stopColor="#CC9450" />
+          <stop offset="50%" stopColor="#8C5C28" />
+          <stop offset="100%" stopColor="#58320E" />
+        </radialGradient>
+        <radialGradient id="so_body" cx="32%" cy="20%" r="68%">
+          <stop offset="0%" stopColor="#4A6BAA" />
+          <stop offset="100%" stopColor="#1A2D5A" />
+        </radialGradient>
+        <filter id="so_shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#00000018" />
+        </filter>
+      </defs>
+
+      <ellipse cx="100" cy="232" rx="58" ry="10" fill="#00000015" />
+
+      {/* Body navy */}
+      <rect x="54" y="148" width="92" height="80" rx="28" fill="url(#so_body)" filter="url(#so_shadow)" />
+      {/* White shirt */}
+      <path d="M82 148 L100 164 L118 148 L112 140 L100 148 L88 140 Z" fill="white" opacity="0.92" />
+      {/* Tie */}
+      <path d="M96 148 L104 148 L106 170 L100 176 L94 170 Z" fill="#2C5F5D" />
+
+      {/* Clipboard */}
+      <rect x="14" y="168" width="30" height="40" rx="5" fill="white" stroke="#C8C0B0" strokeWidth="1.5" filter="url(#so_shadow)" />
+      <rect x="20" y="162" width="18" height="10" rx="4" fill="#B0A090" />
+      <rect x="18" y="182" width="22" height="3" rx="1.5" fill="#D8D0C8" />
+      <rect x="18" y="190" width="18" height="3" rx="1.5" fill="#D8D0C8" />
+      <rect x="18" y="198" width="22" height="3" rx="1.5" fill="#D8D0C8" />
+
+      {/* Arms */}
+      <rect x="28" y="150" width="28" height="52" rx="14" fill="url(#so_body)" />
+      <rect x="144" y="150" width="28" height="52" rx="14" fill="url(#so_body)" />
+      <ellipse cx="42" cy="207" rx="17" ry="14" fill="#F5BC88" />
+      <ellipse cx="158" cy="207" rx="17" ry="14" fill="#F5BC88" />
+
+      {/* Neck */}
+      <ellipse cx="100" cy="140" rx="14" ry="12" fill="#F5BC88" />
+
+      {/* Hair back */}
+      <ellipse cx="100" cy="74" rx="54" ry="48" fill="url(#so_hair)" />
+      <ellipse cx="48" cy="86" rx="14" ry="24" fill="url(#so_hair)" />
+      <ellipse cx="152" cy="86" rx="14" ry="24" fill="url(#so_hair)" />
+
+      {/* Face */}
+      <ellipse cx="100" cy="88" rx="50" ry="54" fill="url(#so_skin)" filter="url(#so_shadow)" />
+
+      {/* Short hair top — male cut */}
+      <ellipse cx="100" cy="46" rx="52" ry="24" fill="url(#so_hair)" />
+      {/* Side part */}
+      <path d="M68 46 Q100 36 132 46 Q120 38 100 36 Q80 38 68 46Z" fill="#A87040" opacity="0.42" />
+      {/* Hair shine */}
+      <ellipse cx="82" cy="38" rx="20" ry="6" fill="#E0B870" opacity="0.48" transform="rotate(-10 82 38)" />
+
+      {/* Eyebrows — male, straighter */}
+      <path d="M71 68 Q80 63 88 67" stroke="#2A1808" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+      <path d="M112 67 Q120 63 129 68" stroke="#2A1808" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+
+      {/* Eyes */}
+      <circle cx="81" cy="83" r="5.5" fill="#150800" />
+      <circle cx="78" cy="80" r="2" fill="white" opacity="0.90" />
+      <circle cx="119" cy="83" r="5.5" fill="#150800" />
+      <circle cx="116" cy="80" r="2" fill="white" opacity="0.90" />
+
+      {/* Cheeks */}
+      <ellipse cx="62" cy="100" rx="15" ry="9" fill="#FFB090" opacity="0.3" />
+      <ellipse cx="138" cy="100" rx="15" ry="9" fill="#FFB090" opacity="0.3" />
+
+      {/* Nose */}
+      <ellipse cx="100" cy="106" rx="6" ry="4" fill="#C88050" opacity="0.3" />
 
       {/* Friendly smile */}
-      <path d="M66 97 Q80 109 94 97" stroke="#C07850" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M68 98 Q80 107 92 98 Q89 104 80 104 Q71 104 68 98Z" fill="white" opacity="0.8" />
-
-      <circle cx="76" cy="90" r="2" fill="#C08050" opacity="0.5" />
-      <circle cx="84" cy="90" r="2" fill="#C08050" opacity="0.5" />
+      <path d="M84 118 Q100 130 116 118" stroke="#C07050" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M86 119 Q100 128 114 119 Q111 125 100 126 Q89 125 86 119Z" fill="#FFEBD6" opacity="0.7" />
     </svg>
   );
 }
 
 function ManagerCharacter({ type }: { type: 'care' | 'medical' | 'social' }) {
-  if (type === 'care') return <CareCharacter />;
-  if (type === 'medical') return <MedicalCharacter />;
-  return <SocialCharacter />;
+  if (type === 'care') return <CareChar />;
+  if (type === 'medical') return <MedicalChar />;
+  return <SocialChar />;
 }
 
 export function Managers() {
@@ -296,7 +343,7 @@ export function Managers() {
                     className="p-7 h-full flex flex-col"
                     style={{ borderRight: i < 2 ? '0.5px solid rgba(42,40,35,0.18)' : 'none' }}
                   >
-                    <div className="w-full mb-5" style={{ height: 190 }}>
+                    <div className="w-full mb-5 flex items-center justify-center" style={{ height: 200 }}>
                       <ManagerCharacter type={c.type} />
                     </div>
                     <div className="flex items-center gap-1.5 mb-2">
