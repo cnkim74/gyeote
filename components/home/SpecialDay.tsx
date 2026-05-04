@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Gift, Sparkles, ShoppingCart, Camera, Flower2, Cake } from 'lucide-react';
+import { ArrowRight, Gift, Sparkles, ShoppingCart, Camera, Flower2, Cake, CheckCircle } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import Link from 'next/link';
 import { G } from '../G';
@@ -44,8 +44,16 @@ const OPTIONS = [
   },
 ];
 
+const inputCls = 'w-full bg-surface border-0 border-b text-[14px] text-ink px-0 py-2.5 focus:outline-none focus:border-accent placeholder:text-mute/60 transition-colors';
+const labelCls = 'block text-[11px] tracking-[0.15em] uppercase text-mute mb-1.5';
+
 export function SpecialDay() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name: '', phone: '', visitDate: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function toggle(id: string) {
     setSelected(prev => {
@@ -53,6 +61,32 @@ export function SpecialDay() {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/special-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          visitDate: form.visitDate,
+          options: Array.from(selected),
+          message: form.message,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? '오류가 발생했습니다.');
+      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : '오류가 발생했습니다.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const hasOptions = selected.size > 0;
@@ -130,7 +164,7 @@ export function SpecialDay() {
             </div>
           </div>
 
-          {/* Quote summary */}
+          {/* Quote summary + form */}
           <div className="md:col-span-5">
             <Reveal delay={200}>
               <div className="sticky top-24">
@@ -142,7 +176,9 @@ export function SpecialDay() {
                       <p className="text-[13px] text-mute">1회 기본 방문료</p>
                       <p className="text-[11px] text-mute mt-0.5">매니저 동행 · 2~3시간</p>
                     </div>
-                    <p className="font-serif-ko font-bold text-[22px] text-ink">50,000<span className="text-[14px] font-normal text-mute ml-1">원</span></p>
+                    <p className="font-serif-ko font-bold text-[22px] text-ink">
+                      50,000<span className="text-[14px] font-normal text-mute ml-1">원</span>
+                    </p>
                   </div>
 
                   {selected.size > 0 && (
@@ -167,9 +203,7 @@ export function SpecialDay() {
                       <p className="text-[13px] text-mute">예상 합계</p>
                       <div className="flex items-baseline gap-1">
                         <span className="text-[11px] text-mute">최소</span>
-                        <span className="font-serif-ko font-bold text-[28px] text-ink">
-                          50,000
-                        </span>
+                        <span className="font-serif-ko font-bold text-[28px] text-ink">50,000</span>
                         <span className="text-[14px] text-mute">원~</span>
                       </div>
                     </div>
@@ -187,14 +221,102 @@ export function SpecialDay() {
                         신청 후 전담 매니저가 직접 연락드려 일정과 세부 내용을 확정합니다.
                       </p>
                     </div>
-                    <Link
-                      href="/#cta"
-                      className="mt-2 flex items-center justify-between px-5 py-3.5 bg-accent text-surface hover:bg-accent/90 transition-colors text-[14px]"
-                    >
-                      <span>특별 방문 신청하기</span>
-                      <ArrowRight size={15} strokeWidth={1.4} />
-                    </Link>
+
+                    {!showForm && !submitted && (
+                      <button
+                        type="button"
+                        onClick={() => setShowForm(true)}
+                        className="mt-2 flex items-center justify-between px-5 py-3.5 bg-accent text-surface hover:bg-accent/90 transition-colors text-[14px] w-full"
+                      >
+                        <span>특별 방문 신청하기</span>
+                        <ArrowRight size={15} strokeWidth={1.4} />
+                      </button>
+                    )}
                   </div>
+
+                  {/* Inline form */}
+                  {showForm && !submitted && (
+                    <form onSubmit={handleSubmit} className="mt-5 pt-5 hairline-t flex flex-col gap-5">
+                      <div>
+                        <label className={labelCls}>신청자 이름 *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="홍길동"
+                          value={form.name}
+                          onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                          className={inputCls}
+                          style={{ borderBottomColor: 'rgba(42,40,35,0.25)' }}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>연락처 *</label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="010-0000-0000"
+                          value={form.phone}
+                          onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                          className={inputCls}
+                          style={{ borderBottomColor: 'rgba(42,40,35,0.25)' }}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>방문 희망일 *</label>
+                        <input
+                          type="date"
+                          required
+                          value={form.visitDate}
+                          onChange={e => setForm(f => ({ ...f, visitDate: e.target.value }))}
+                          className={inputCls}
+                          style={{ borderBottomColor: 'rgba(42,40,35,0.25)' }}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>추가 요청사항</label>
+                        <textarea
+                          rows={3}
+                          placeholder="특별히 준비하면 좋을 내용이 있으면 적어주세요."
+                          value={form.message}
+                          onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                          className={`${inputCls} resize-none`}
+                          style={{ borderBottomColor: 'rgba(42,40,35,0.25)' }}
+                        />
+                      </div>
+
+                      {error && (
+                        <p className="text-[12px] text-red-500">{error}</p>
+                      )}
+
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowForm(false)}
+                          className="flex-1 px-4 py-3 hairline text-[13px] text-mute hover:text-ink transition-colors"
+                        >
+                          취소
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="flex-[2] px-4 py-3 bg-accent text-surface text-[13px] hover:bg-accent/90 transition-colors disabled:opacity-60"
+                        >
+                          {submitting ? '신청 중...' : '신청 완료'}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Success */}
+                  {submitted && (
+                    <div className="mt-5 pt-5 hairline-t flex flex-col items-center gap-3 py-4 text-center">
+                      <CheckCircle size={32} strokeWidth={1.2} className="text-primary" />
+                      <p className="font-serif-ko text-[15px] text-ink">신청이 완료되었습니다.</p>
+                      <p className="text-[12px] text-mute leading-[1.7]">
+                        담당 매니저가 1~2일 내로 연락드립니다.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <p className="mt-4 text-[12px] text-mute leading-[1.7]">
