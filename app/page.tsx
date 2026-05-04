@@ -5,6 +5,7 @@ import { Problem } from '@/components/home/Problem';
 import { Solution } from '@/components/home/Solution';
 import { KakaoDemo } from '@/components/home/KakaoDemo';
 import { Pricing } from '@/components/home/Pricing';
+import { SpecialDay } from '@/components/home/SpecialDay';
 import { Different } from '@/components/home/Different';
 import { Managers } from '@/components/home/Managers';
 import { Voices } from '@/components/home/Voices';
@@ -39,6 +40,7 @@ export default async function HomePage() {
         <Solution />
         <KakaoDemo />
         <Pricing />
+        <SpecialDay />
         <Different />
         <Managers />
         <Voices />
