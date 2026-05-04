@@ -11,6 +11,21 @@ interface SlideImage {
   caption: string;
 }
 
+const SLIDE_TEXTS = [
+  {
+    desc: '매주 전화로는 닿지 않는 거리.\n곁에는 매니저가 부모님을 정기적으로 찾아뵙고,\n그날의 안부를 자녀에게 카카오톡으로\n전해드리는 동행 구독 서비스입니다.',
+    card: '어머님 안색 좋으셨습니다.',
+  },
+  {
+    desc: '병원 동행부터 장 보기, 말벗까지.\n사소한 일상이 리포트로 쌓이면,\n멀리서도 부모님의 오늘을\n온전히 알 수 있습니다.',
+    card: '병원 동행 후 식사 함께했습니다.',
+  },
+  {
+    desc: '자격증을 보유한 매니저가 직접 방문합니다.\n요양보호사·간호조무사·사회복지사,\n세 가지 전문성이 한 분 곁에\n함께합니다.',
+    card: '약 정리 및 건강 체크 완료했습니다.',
+  },
+];
+
 export function HeroSlideshow({ images }: { images: SlideImage[] }) {
   const [current, setCurrent] = useState(0);
   const [fading, setFading] = useState(false);
@@ -28,6 +43,9 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
   }, [images.length]);
 
   const slide = images[current];
+  const text = SLIDE_TEXTS[current % SLIDE_TEXTS.length];
+  const fadeCls = 'transition-opacity duration-500';
+  const fadeStyle = { opacity: fading ? 0 : 1 };
 
   return (
     <section className="pt-24 md:pt-36 pb-0">
@@ -54,13 +72,10 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
             </h1>
 
             <p
-              className="text-[15px] md:text-[16px] text-ink/65 leading-[1.95] mb-8 md:mb-12 max-w-[380px]"
-              style={{ wordBreak: 'keep-all' }}
+              className={`text-[15px] md:text-[16px] text-ink/65 leading-[1.95] mb-8 md:mb-12 max-w-[380px] whitespace-pre-line ${fadeCls}`}
+              style={{ ...fadeStyle, wordBreak: 'keep-all' }}
             >
-              매주 전화로는 닿지 않는 거리.
-              곁에는 매니저가 부모님을 정기적으로 찾아뵙고,
-              그날의 안부를 자녀에게 카카오톡으로
-              전해드리는 동행 구독 서비스입니다.
+              {text.desc}
             </p>
 
             <div className="flex items-center gap-5 flex-wrap">
@@ -88,8 +103,8 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
             }}
           >
             <div
-              className="absolute inset-0 w-full h-full transition-opacity duration-500"
-              style={{ opacity: fading ? 0 : 1 }}
+              className={`absolute inset-0 w-full h-full ${fadeCls}`}
+              style={fadeStyle}
             >
               <Image
                 src={slide.url}
@@ -103,14 +118,14 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
 
             {/* Floating visit card */}
             <div
-              className="absolute bottom-5 left-4 bg-paper/95 backdrop-blur-sm px-4 py-3.5 max-w-[200px]"
-              style={{ border: '0.5px solid rgba(42,40,35,0.18)' }}
+              className={`absolute bottom-5 left-4 bg-paper/95 backdrop-blur-sm px-4 py-3.5 max-w-[200px] ${fadeCls}`}
+              style={{ ...fadeStyle, border: '0.5px solid rgba(42,40,35,0.18)' }}
             >
               <p className="font-en text-[9.5px] tracking-[0.2em] uppercase text-mute mb-1.5">
                 Last Visit
               </p>
               <p className="font-serif-ko text-[13px] text-ink leading-[1.6]">
-                10월 24일 · 어머님 안색 좋으셨습니다.
+                {text.card}
               </p>
             </div>
 
@@ -143,7 +158,9 @@ export function HeroSlideshow({ images }: { images: SlideImage[] }) {
         <span className="font-en italic text-mute hidden md:inline">— 운영 슬로건</span>
         <span className="font-serif-ko text-ink whitespace-nowrap">오늘도 <G /> 다녀왔습니다.</span>
         <span className="font-en italic text-mute hidden md:inline">Plate i.</span>
-        <span className="text-mute text-[11px] truncate">{slide.caption}</span>
+        <span className={`text-mute text-[11px] truncate ${fadeCls}`} style={fadeStyle}>
+          {slide.caption}
+        </span>
       </div>
     </section>
   );
