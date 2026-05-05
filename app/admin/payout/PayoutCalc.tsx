@@ -12,9 +12,10 @@ const PLANS: { key: string; label: string; price: number; color: string }[] = [
 ];
 
 const INDUSTRY_REFS = [
-  { label: '정부 장기요양 (방문요양)', rate: 72, note: '수가의 72% 내외가 요양보호사에게 지급 (최저 기준)', color: '#8A8070' },
-  { label: '민간 재가요양 업체 평균',  rate: 55, note: '운영비·보험·교육비 공제 후 실수령 기준', color: '#8A8070' },
-  { label: '프리미엄 민간케어 상위',   rate: 63, note: '보험·CS·리포트 시스템 포함 상위 업체 기준', color: '#2C5F5D' },
+  { label: '정부 장기요양 법적 의무', rate: 87, note: '방문요양 수가의 87.1% 인건비 의무 지출 (보건복지부 고시 2025)', color: '#8A8070' },
+  { label: '정부 장기요양 실수령',    rate: 70, note: '4대보험·공제 후 요양보호사 실수령 기준 (수가의 65~75%)', color: '#8A8070' },
+  { label: '민간 비급여 업체 평균',   rate: 57, note: '케어링·케어닥 등 민간 서비스 추정 (50~65%)', color: '#8A8070' },
+  { label: '민간 비급여 상위 (권장)', rate: 68, note: '우수 매니저 유지를 위한 경쟁력 있는 수준 (65~75%)', color: '#2C5F5D' },
 ];
 
 interface ManagerRow {
@@ -79,9 +80,10 @@ export function PayoutCalc({ managers }: { managers: ManagerRow[] }) {
         <div className="mt-4 flex items-start gap-2 bg-surface px-3 py-2.5">
           <Info size={12} strokeWidth={1.4} className="text-primary mt-0.5 shrink-0" />
           <p className="text-[12px] text-mute leading-[1.65]">
-            곁에는 리포트 시스템·AI 초안·보험·CS를 운영비로 사용합니다.
-            업계 평균(55%) 대비 <strong className="text-ink">5~10%p 더 지급</strong>하면 매니저 유지율이 높아집니다.
-            <strong className="text-ink"> 60~65%</strong> 권장.
+            곁에 방문 1회당 수익은 약 <strong className="text-ink">18,600~19,800원</strong>입니다.
+            민간 평균(57%) 지급 시 회당 <strong className="text-ink">약 11,000원</strong>,
+            우수 기준(68%) 지급 시 <strong className="text-ink">약 13,000원</strong>입니다.
+            운영비(리포트·AI·보험·CS) 감안 시 <strong className="text-primary">60~65%</strong> 권장.
           </p>
         </div>
       </div>
