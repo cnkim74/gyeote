@@ -26,7 +26,7 @@ interface ManagerRow {
 }
 
 export function PayoutCalc({ managers }: { managers: ManagerRow[] }) {
-  const [rate, setRate] = useState(60);
+  const [rate, setRate] = useState(65);
   const [customRates, setCustomRates] = useState<Record<string, number>>({});
 
   const fmt = (n: number) =>
